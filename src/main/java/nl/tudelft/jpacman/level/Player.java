@@ -81,7 +81,6 @@ public class Player extends Unit {
         }
         if (!isAlive) {
             deathSprite.restart();
-            die();
         }
         this.alive = isAlive;
     }
