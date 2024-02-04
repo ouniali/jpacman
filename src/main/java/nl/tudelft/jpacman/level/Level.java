@@ -56,7 +56,12 @@ public class Level {
     /**
      * The squares from which players can start this game.
      */
-    private final List<Square> startSquares;
+    private final List<Square> playersStartSquares;
+
+    /**
+     * The squares from which players can start this game.
+     */
+    private final Map<Ghost, Square> ghostsStartSquares = new HashMap<Ghost, Square>();
 
     /**
      * The start current selected starting square.
@@ -100,9 +105,10 @@ public class Level {
         this.inProgress = false;
         this.npcs = new HashMap<>();
         for (Ghost ghost : ghosts) {
+            ghostsStartSquares.put(ghost, ghost.getSquare());
             npcs.put(ghost, null);
         }
-        this.startSquares = startPositions;
+        this.playersStartSquares = startPositions;
         this.startSquareIndex = 0;
         this.players = new ArrayList<>();
         this.collisions = collisionMap;
@@ -139,16 +145,16 @@ public class Level {
      */
     public void registerPlayer(Player player) {
         if (player == null) {throw new NullPointerException("player cannot be null");}
-        assert !startSquares.isEmpty();
+        assert !playersStartSquares.isEmpty();
 
         if (players.contains(player)) {
             return;
         }
         players.add(player);
-        Square square = startSquares.get(startSquareIndex);
+        Square square = playersStartSquares.get(startSquareIndex);
         player.occupy(square);
         startSquareIndex++;
-        startSquareIndex %= startSquares.size();
+        startSquareIndex %= playersStartSquares.size();
     }
 
     /**
@@ -304,8 +310,20 @@ public class Level {
             if (player.isAlive()) {
                 return true;
             }
+            if (player.getLives() > 0) {
+                handleLifeLost(player);
+                return true;
+            }
         }
         return false;
+    }
+
+    private void handleLifeLost(Player player) {
+        player.setAlive(true);
+        Square square = playersStartSquares.get(startSquareIndex);
+        player.occupy(square);
+        npcs.forEach((ghost, scheduledExecutorService) -> ghost.occupy(ghostsStartSquares.get(ghost)));
+        stop();
     }
 
     /**
