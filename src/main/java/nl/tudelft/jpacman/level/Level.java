@@ -259,19 +259,36 @@ public class Level {
         return inProgress;
     }
 
+    private boolean isLevelLost() {
+        return !isAnyPlayerAlive();
+    }
+
+    private boolean isLevelWon() {
+        return remainingPellets() == 0;
+    }
+
     /**
      * Updates the observers about the state of this level.
      */
     private void updateObservers() {
-        if (!isAnyPlayerAlive()) {
-            for (LevelObserver observer : observers) {
-                observer.levelLost();
-            }
+        if (isLevelLost()) {
+            notifyObserversLevelLost();
         }
-        if (remainingPellets() == 0) {
-            for (LevelObserver observer : observers) {
-                observer.levelWon();
-            }
+
+        if (isLevelWon()) {
+            notifyObserversLevelWon();
+        }
+    }
+
+    private void notifyObserversLevelLost() {
+        for (LevelObserver observer : observers) {
+            observer.levelLost();
+        }
+    }
+
+    private void notifyObserversLevelWon() {
+        for (LevelObserver observer : observers) {
+            observer.levelWon();
         }
     }
 
