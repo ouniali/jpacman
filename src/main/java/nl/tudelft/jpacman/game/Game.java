@@ -47,7 +47,7 @@ public abstract class Game implements LevelObserver {
      */
     public void start() {
         synchronized (progressLock) {
-            if (isInProgress()) {
+            if (getLevel().isInProgress()) {
                 return;
             }
             if (getLevel().isAnyPlayerAlive() && getLevel().remainingPellets() > 0) {
@@ -63,7 +63,7 @@ public abstract class Game implements LevelObserver {
      */
     public void stop() {
         synchronized (progressLock) {
-            if (!isInProgress()) {
+            if (!getLevel().isInProgress()) {
                 return;
             }
             inProgress = false;
