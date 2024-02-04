@@ -92,9 +92,9 @@ public class Level {
      */
     public Level(Board board, List<Ghost> ghosts, List<Square> startPositions,
                  CollisionMap collisionMap) {
-        assert board != null;
-        assert ghosts != null;
-        assert startPositions != null;
+        if (board == null) {throw new NullPointerException("board cannot be null");}
+        if (ghosts == null) {throw new NullPointerException("ghosts cannot be null");}
+        if (startPositions == null) {throw new NullPointerException("startPositions cannot be null");}
 
         this.board = board;
         this.inProgress = false;
@@ -138,7 +138,7 @@ public class Level {
      *            The player to register.
      */
     public void registerPlayer(Player player) {
-        assert player != null;
+        if (player == null) {throw new NullPointerException("player cannot be null");}
         assert !startSquares.isEmpty();
 
         if (players.contains(player)) {
@@ -170,9 +170,9 @@ public class Level {
      *            The direction to move the unit in.
      */
     public void move(Unit unit, Direction direction) {
-        assert unit != null;
-        assert direction != null;
-        assert unit.hasSquare();
+        if (unit == null) {throw new NullPointerException("unit cannot be null");}
+        if (direction == null) {throw new NullPointerException("direction cannot be null");}
+        if (!unit.hasSquare()) {throw new IllegalStateException("unit has to occupy a square");}
 
         if (!isInProgress()) {
             return;
