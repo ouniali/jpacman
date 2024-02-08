@@ -33,6 +33,8 @@ public class Player extends Unit {
      * <code>true</code> iff this player is alive.
      */
     private boolean alive;
+    public static final int INITIAL_LIVES = 3;
+    private int lives;
 
     /**
      * {@link Unit} iff this player died by collision, <code>null</code> otherwise.
@@ -49,7 +51,7 @@ public class Player extends Unit {
      */
     protected Player(Map<Direction, Sprite> spriteMap, AnimatedSprite deathAnimation) {
         this.score = 0;
-        this.alive = true;
+        this.lives = INITIAL_LIVES;
         this.sprites = spriteMap;
         this.deathSprite = deathAnimation;
         deathSprite.setAnimating(false);
@@ -61,26 +63,26 @@ public class Player extends Unit {
      * @return <code>true</code> iff the player is alive.
      */
     public boolean isAlive() {
-        return alive;
+        return lives > 0;
     }
 
-    /**
-     * Sets whether this player is alive or not.
-     *
-     * If the player comes back alive, the {@link killer} will be reset.
-     *
-     * @param isAlive
-     *            <code>true</code> iff this player is alive.
-     */
-    public void setAlive(boolean isAlive) {
-        if (isAlive) {
+    public int getLives() {
+        return this.lives;
+    }
+
+    public void setLives(int lives) {
+        if (lives == 0) {
+            deathSprite.restart();
+        } else {
             deathSprite.setAnimating(false);
             this.killer = null;
         }
-        if (!isAlive) {
-            deathSprite.restart();
-        }
-        this.alive = isAlive;
+
+        if (lives >= 0) this.lives = lives;
+    }
+
+    public void decrementLives() {
+        setLives((lives - 1));
     }
 
     /**
