@@ -111,6 +111,9 @@ public abstract class Game implements LevelObserver {
 
     @Override
     public void levelLost() {
-        stop();
+        Player player = getPlayers().get(0);
+        if (!player.hasRemainingLives()) {
+            stop();
+        }
     }
 }
