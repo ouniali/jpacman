@@ -3,6 +3,7 @@ package nl.tudelft.jpacman.level;
 import nl.tudelft.jpacman.board.Unit;
 import nl.tudelft.jpacman.npc.Ghost;
 import nl.tudelft.jpacman.points.PointCalculator;
+import nl.tudelft.jpacman.ui.DeathWindow;
 
 /**
  * A simple implementation of a collision map for the JPacman player.
@@ -75,7 +76,8 @@ public class PlayerCollisions implements CollisionMap {
      */
     public void playerVersusGhost(Player player, Ghost ghost) {
         pointCalculator.collidedWithAGhost(player, ghost);
-        player.setAlive(false);
+        player.loseOneLife();
+        DeathWindow window = new DeathWindow(player);
         player.setKiller(ghost);
     }
 

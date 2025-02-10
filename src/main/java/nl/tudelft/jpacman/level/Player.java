@@ -7,6 +7,8 @@ import nl.tudelft.jpacman.board.Unit;
 import nl.tudelft.jpacman.sprite.AnimatedSprite;
 import nl.tudelft.jpacman.sprite.Sprite;
 
+import javax.swing.*;
+
 /**
  * A player operated unit in our game.
  *
@@ -39,6 +41,8 @@ public class Player extends Unit {
      */
     private Unit killer;
 
+    private int lives;
+
     /**
      * Creates a new player with a score of 0 points.
      *
@@ -47,12 +51,13 @@ public class Player extends Unit {
      * @param deathAnimation
      *            The sprite to be shown when this player dies.
      */
-    protected Player(Map<Direction, Sprite> spriteMap, AnimatedSprite deathAnimation) {
+    protected Player(Map<Direction, Sprite> spriteMap, AnimatedSprite deathAnimation, int lives) {
         this.score = 0;
         this.alive = true;
         this.sprites = spriteMap;
         this.deathSprite = deathAnimation;
         deathSprite.setAnimating(false);
+        this.lives = lives;
     }
 
     /**
@@ -83,6 +88,13 @@ public class Player extends Unit {
         this.alive = isAlive;
     }
 
+    public void loseOneLife() {
+        this.lives--;
+        if(this.lives == 0) {
+            this.setAlive(false);
+        }
+    }
+
     /**
      * Returns the unit that caused the death of Pac-Man.
      *
@@ -100,6 +112,15 @@ public class Player extends Unit {
     public void setKiller(Unit killer) {
         this.killer =  killer;
     }
+
+    public int getLives() {
+        return this.lives;
+    }
+
+    public void setLives(int lives) {
+        this.lives = lives;
+    }
+
 
     /**
      * Returns the amount of points accumulated by this player.
