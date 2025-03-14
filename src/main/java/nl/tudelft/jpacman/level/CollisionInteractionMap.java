@@ -73,7 +73,7 @@ public class CollisionInteractionMap implements CollisionMap {
         CollisionHandler<C1, C2> handler) {
         addHandler(collider, collidee, handler);
         if (symetric) {
-            addHandler(collidee, collider, new InverseCollisionHandler<>(handler));
+            addHandler(collider, collidee, new InverseCollisionHandler<>(handler));
         }
     }
 

@@ -1,0 +1,279 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > AnimatedSprite</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">nl.tudelft.jpacman.sprite</a>
+</div>
+
+<h1>Coverage Summary for Class: AnimatedSprite (nl.tudelft.jpacman.sprite)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">AnimatedSprite</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/18)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/38)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package nl.tudelft.jpacman.sprite;
+&nbsp;
+&nbsp;import java.awt.Graphics;
+&nbsp;
+&nbsp;/**
+&nbsp; * Animated sprite, renders the frame depending on the time of requesting the
+&nbsp; * draw.
+&nbsp; *
+&nbsp; * @author Jeroen Roosen 
+&nbsp; */
+<b class="nc">&nbsp;public class AnimatedSprite implements Sprite {</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Static empty sprite to serve as the end of a non-looping sprite.
+&nbsp;     */
+<b class="nc">&nbsp;    private static final Sprite END_OF_LOOP = new EmptySprite();</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * The animation itself, in frames.
+&nbsp;     */
+&nbsp;    private final Sprite[] animationFrames;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * The delay between frames.
+&nbsp;     */
+&nbsp;    private final int animationDelay;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Whether is animation should be looping or not.
+&nbsp;     */
+&nbsp;    private final boolean looping;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * The index of the current frame.
+&nbsp;     */
+&nbsp;    private int current;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Whether this sprite is currently animating or not.
+&nbsp;     */
+&nbsp;    private boolean animating;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * The {@link System#currentTimeMillis()} stamp of the last update.
+&nbsp;     */
+&nbsp;    private long lastUpdate;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Creates a new animating sprite that will change frames every interval. By
+&nbsp;     * default the sprite is not animating.
+&nbsp;     *
+&nbsp;     * @param frames
+&nbsp;     *            The frames of this animation.
+&nbsp;     * @param delay
+&nbsp;     *            The delay between frames.
+&nbsp;     * @param loop
+&nbsp;     *            Whether or not this sprite should be looping.
+&nbsp;     */
+&nbsp;    public AnimatedSprite(Sprite[] frames, int delay, boolean loop) {
+<b class="nc">&nbsp;        this(frames, delay, loop, false);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Creates a new animating sprite that will change frames every interval.
+&nbsp;     *
+&nbsp;     * @param frames
+&nbsp;     *            The frames of this animation.
+&nbsp;     * @param delay
+&nbsp;     *            The delay between frames.
+&nbsp;     * @param loop
+&nbsp;     *            Whether or not this sprite should be looping.
+&nbsp;     * @param isAnimating
+&nbsp;     *            Whether or not this sprite is animating from the start.
+&nbsp;     */
+<b class="nc">&nbsp;    public AnimatedSprite(Sprite[] frames, int delay, boolean loop, boolean isAnimating) {</b>
+<b class="nc">&nbsp;        assert frames.length &gt; 0;</b>
+&nbsp;
+<b class="nc">&nbsp;        this.animationFrames = frames.clone();</b>
+<b class="nc">&nbsp;        this.animationDelay = delay;</b>
+<b class="nc">&nbsp;        this.looping = loop;</b>
+<b class="nc">&nbsp;        this.animating = isAnimating;</b>
+&nbsp;
+<b class="nc">&nbsp;        this.current = 0;</b>
+<b class="nc">&nbsp;        this.lastUpdate = System.currentTimeMillis();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * @return The frame of the current index.
+&nbsp;     */
+&nbsp;    private Sprite currentSprite() {
+<b class="nc">&nbsp;        Sprite result = END_OF_LOOP;</b>
+<b class="nc">&nbsp;        if (current &lt; animationFrames.length) {</b>
+<b class="nc">&nbsp;            result = animationFrames[current];</b>
+&nbsp;        }
+<b class="nc">&nbsp;        assert result != null;</b>
+<b class="nc">&nbsp;        return result;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Starts or stops the animation of this sprite.
+&nbsp;     *
+&nbsp;     * @param isAnimating
+&nbsp;     *            &lt;code&gt;true&lt;/code&gt; to animate this sprite or &lt;code&gt;false&lt;/code&gt;
+&nbsp;     *            to stop animating this sprite.
+&nbsp;     */
+&nbsp;    public void setAnimating(boolean isAnimating) {
+<b class="nc">&nbsp;        this.animating = isAnimating;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * (Re)starts the current animation.
+&nbsp;     */
+&nbsp;    public void restart() {
+<b class="nc">&nbsp;        this.current = 0;</b>
+<b class="nc">&nbsp;        this.lastUpdate = System.currentTimeMillis();</b>
+<b class="nc">&nbsp;        setAnimating(true);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void draw(Graphics graphics, int x, int y, int width, int height) {
+<b class="nc">&nbsp;        update();</b>
+<b class="nc">&nbsp;        currentSprite().draw(graphics, x, y, width, height);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public Sprite split(int x, int y, int width, int height) {
+<b class="nc">&nbsp;        update();</b>
+<b class="nc">&nbsp;        return currentSprite().split(x, y, width, height);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Updates the current frame index depending on the current system time.
+&nbsp;     */
+&nbsp;    private void update() {
+<b class="nc">&nbsp;        long now = System.currentTimeMillis();</b>
+<b class="nc">&nbsp;        if (animating) {</b>
+<b class="nc">&nbsp;            while (lastUpdate &lt; now) {</b>
+<b class="nc">&nbsp;                lastUpdate += animationDelay;</b>
+<b class="nc">&nbsp;                current++;</b>
+<b class="nc">&nbsp;                if (looping) {</b>
+<b class="nc">&nbsp;                    current %= animationFrames.length;</b>
+<b class="nc">&nbsp;                } else if (current == animationFrames.length) {</b>
+<b class="nc">&nbsp;                    animating = false;</b>
+&nbsp;                }
+&nbsp;            }
+&nbsp;        } else {
+<b class="nc">&nbsp;            lastUpdate = now;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public int getWidth() {
+<b class="nc">&nbsp;        assert currentSprite() != null;</b>
+<b class="nc">&nbsp;        return currentSprite().getWidth();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public int getHeight() {
+<b class="nc">&nbsp;        assert currentSprite() != null;</b>
+<b class="nc">&nbsp;        return currentSprite().getHeight();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-03-12 17:36</div>
+</div>
+</body>
+</html>

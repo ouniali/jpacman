@@ -11,6 +11,7 @@ import nl.tudelft.jpacman.sprite.PacManSprites;
 import nl.tudelft.jpacman.sprite.Sprite;
 
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Factory that creates levels and units.
@@ -49,6 +50,7 @@ public class LevelFactory {
      * The way to calculate points upon collisions.
      */
     private final PointCalculator pointCalculator;
+
 
     /**
      * Creates a new level factory.
@@ -164,7 +166,7 @@ public class LevelFactory {
             if (directions.isEmpty()) {
                 return null;
             }
-            int i = new Random().nextInt(directions.size());
+            int i = ThreadLocalRandom.current().nextInt(directions.size());
             return directions.get(i);
         }
     }

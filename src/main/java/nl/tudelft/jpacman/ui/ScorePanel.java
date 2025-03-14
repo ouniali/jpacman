@@ -27,7 +27,7 @@ public class ScorePanel extends JPanel {
     /**
      * The map of players and the labels their scores are on.
      */
-    private final Map<Player, JLabel> scoreLabels;
+    private final transient Map<Player, JLabel> scoreLabels;
 
     /**
      * The default way in which the score is shown.
@@ -38,7 +38,7 @@ public class ScorePanel extends JPanel {
     /**
      * The way to format the score information.
      */
-    private ScoreFormatter scoreFormatter = DEFAULT_SCORE_FORMATTER;
+    private transient ScoreFormatter scoreFormatter;
 
     /**
      * Creates a new score panel with a column for each player.
@@ -47,17 +47,17 @@ public class ScorePanel extends JPanel {
      *            The players to display the scores of.
      */
     public ScorePanel(List<Player> players) {
-        super();
+        this.scoreFormatter = DEFAULT_SCORE_FORMATTER;
         assert players != null;
 
         setLayout(new GridLayout(2, players.size()));
 
         for (int i = 1; i <= players.size(); i++) {
-            add(new JLabel("Player " + i, JLabel.CENTER));
+            add(new JLabel("Player " + i, 0));
         }
         scoreLabels = new LinkedHashMap<>();
         for (Player player : players) {
-            JLabel scoreLabel = new JLabel("0", JLabel.CENTER);
+            JLabel scoreLabel = new JLabel("0", 0);
             scoreLabels.put(player, scoreLabel);
             add(scoreLabel);
         }

@@ -1,0 +1,116 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > PointCalculator</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">nl.tudelft.jpacman.points</a>
+</div>
+
+<h1>Coverage Summary for Class: PointCalculator (nl.tudelft.jpacman.points)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">PointCalculator</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package nl.tudelft.jpacman.points;
+&nbsp;
+&nbsp;import nl.tudelft.jpacman.board.Direction;
+&nbsp;import nl.tudelft.jpacman.level.Pellet;
+&nbsp;import nl.tudelft.jpacman.level.Player;
+&nbsp;import nl.tudelft.jpacman.npc.Ghost;
+&nbsp;
+&nbsp;/**
+&nbsp; * The responsibility of the point calculator is to update the points
+&nbsp; * of the player when certain activities happen.
+&nbsp; * Different calculation strategies can be employed,
+&nbsp; * giving rise to different types of games, for example at different levels.
+&nbsp; */
+&nbsp;public interface PointCalculator {
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Method called whenever a player meets a ghost.
+&nbsp;     * It can be used to update the player&#39;s points accordingly.
+&nbsp;     *
+&nbsp;     * @param player
+&nbsp;     *            The player that will die.
+&nbsp;     * @param ghost
+&nbsp;     *            The ghost causing the player to die.
+&nbsp;     */
+&nbsp;    void collidedWithAGhost(Player player, Ghost ghost);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Method called whenever a player consumes a pellet.
+&nbsp;     * It can be used to update the player&#39;s points accordingly.
+&nbsp;     *
+&nbsp;     * @param player
+&nbsp;     *            The player consuming a pellet
+&nbsp;     * @param pellet
+&nbsp;     *            The pellet consumed.
+&nbsp;     */
+&nbsp;    void consumedAPellet(Player player, Pellet pellet);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Method called whevener a player makes a successful move.
+&nbsp;     * It can be used to update the player&#39;s points accordingly.
+&nbsp;     *
+&nbsp;     * @param player
+&nbsp;     *           The player making a move.
+&nbsp;     * @param direction
+&nbsp;     *           The direction of the move.
+&nbsp;     */
+&nbsp;    void pacmanMoved(Player player, Direction direction);
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-03-12 17:36</div>
+</div>
+</body>
+</html>

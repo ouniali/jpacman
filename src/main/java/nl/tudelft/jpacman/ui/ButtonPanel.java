@@ -28,10 +28,11 @@ class ButtonPanel extends JPanel {
         assert buttons != null;
         assert parent != null;
 
-        for (final String caption : buttons.keySet()) {
-            JButton button = new JButton(caption);
+        for (Map.Entry<String, Action> entry : buttons.entrySet()) {
+            JButton button = new JButton(entry.getKey());
+            Action action = entry.getValue();
             button.addActionListener(e -> {
-                buttons.get(caption).doAction();
+                action.doAction();
                 parent.requestFocusInWindow();
             });
             add(button);

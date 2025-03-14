@@ -157,7 +157,7 @@ public class Level {
      * @return The board of this level.
      */
     public Board getBoard() {
-        return board;
+        return this.board;
     }
 
     /**
@@ -297,11 +297,10 @@ public class Level {
      * @return The amount of pellets remaining on the board.
      */
     public int remainingPellets() {
-        Board board = getBoard();
         int pellets = 0;
-        for (int x = 0; x < board.getWidth(); x++) {
-            for (int y = 0; y < board.getHeight(); y++) {
-                for (Unit unit : board.squareAt(x, y).getOccupants()) {
+        for (int x = 0; x < this.board.getWidth(); x++) {
+            for (int y = 0; y < this.board.getHeight(); y++) {
+                for (Unit unit : this.board.squareAt(x, y).getOccupants()) {
                     if (unit instanceof Pellet) {
                         pellets++;
                     }

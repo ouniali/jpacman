@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -220,7 +221,7 @@ public class MapParser {
      */
     public Level parseMap(InputStream source) throws IOException {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(
-            source, "UTF-8"))) {
+            source, StandardCharsets.UTF_8))) {
             List<String> lines = new ArrayList<>();
             while (reader.ready()) {
                 lines.add(reader.readLine());

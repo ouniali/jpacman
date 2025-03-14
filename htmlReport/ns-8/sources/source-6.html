@@ -1,0 +1,383 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > Navigation</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">nl.tudelft.jpacman.npc.ghost</a>
+</div>
+
+<h1>Coverage Summary for Class: Navigation (nl.tudelft.jpacman.npc.ghost)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Navigation</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/38)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/45)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Navigation$Node</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/11)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/40)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/56)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package nl.tudelft.jpacman.npc.ghost;
+&nbsp;
+&nbsp;import java.util.*;
+&nbsp;
+&nbsp;import nl.tudelft.jpacman.board.Board;
+&nbsp;import nl.tudelft.jpacman.board.Direction;
+&nbsp;import nl.tudelft.jpacman.board.Square;
+&nbsp;import nl.tudelft.jpacman.board.Unit;
+&nbsp;
+&nbsp;/**
+&nbsp; * Navigation provides utility to navigate on {@link Square}s.
+&nbsp; *
+&nbsp; * @author Jeroen Roosen 
+&nbsp; */
+<b class="nc">&nbsp;public final class Navigation {</b>
+&nbsp;
+&nbsp;    private Navigation() {
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Calculates the shortest path. This is done by BFS. This search ensures
+&nbsp;     * the traveller is allowed to occupy the squares on the way, or returns the
+&nbsp;     * shortest path to the square regardless of terrain if no traveller is
+&nbsp;     * specified.
+&nbsp;     *
+&nbsp;     * @param from
+&nbsp;     *            The starting square.
+&nbsp;     * @param to
+&nbsp;     *            The destination.
+&nbsp;     * @param traveller
+&nbsp;     *            The traveller attempting to reach the destination. If
+&nbsp;     *            traveller is set to &lt;code&gt;null&lt;/code&gt;, this method will ignore
+&nbsp;     *            terrain and find the shortest path whether it can actually be
+&nbsp;     *            reached or not.
+&nbsp;     * @return The shortest path to the destination or &lt;code&gt;null&lt;/code&gt; if no
+&nbsp;     *         such path could be found. When the destination is the current
+&nbsp;     *         square, an empty list is returned.
+&nbsp;     */
+&nbsp;    public static List&lt;Direction&gt; shortestPath(Square from, Square to,
+&nbsp;                                                         Unit traveller) {
+<b class="nc">&nbsp;        if (from.equals(to)) {</b>
+<b class="nc">&nbsp;            return new ArrayList&lt;&gt;();</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        List&lt;Node&gt; targets = new ArrayList&lt;&gt;();</b>
+<b class="nc">&nbsp;        Set&lt;Square&gt; visited = new HashSet&lt;&gt;();</b>
+<b class="nc">&nbsp;        targets.add(new Node(null, from, null));</b>
+<b class="nc">&nbsp;        while (!targets.isEmpty()) {</b>
+<b class="nc">&nbsp;            Node node = targets.remove(0);</b>
+<b class="nc">&nbsp;            Square square = node.getSquare();</b>
+<b class="nc">&nbsp;            if (square.equals(to)) {</b>
+<b class="nc">&nbsp;                return node.getPath();</b>
+&nbsp;            }
+<b class="nc">&nbsp;            visited.add(square);</b>
+<b class="nc">&nbsp;            addNewTargets(traveller, targets, visited, node, square);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return Collections.emptyList();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private static void addNewTargets(Unit traveller, List&lt;Node&gt; targets,
+&nbsp;                                      Set&lt;Square&gt; visited, Node node, Square square) {
+<b class="nc">&nbsp;        for (Direction direction : Direction.values()) {</b>
+<b class="nc">&nbsp;            Square target = square.getSquareAt(direction);</b>
+<b class="nc">&nbsp;            if (!visited.contains(target)</b>
+<b class="nc">&nbsp;                &amp;&amp; (traveller == null || target.isAccessibleTo(traveller))) {</b>
+<b class="nc">&nbsp;                targets.add(new Node(direction, target, node));</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Finds the nearest unit of the given type and returns its location. This
+&nbsp;     * method will perform a breadth first search starting from the given
+&nbsp;     * square.
+&nbsp;     *
+&nbsp;     * @param type
+&nbsp;     *            The type of unit to search for.
+&nbsp;     * @param currentLocation
+&nbsp;     *            The starting location for the search.
+&nbsp;     * @return The nearest unit of the given type, or &lt;code&gt;null&lt;/code&gt; if no
+&nbsp;     *         such unit could be found.
+&nbsp;     */
+&nbsp;    public static Unit findNearest(Class&lt;? extends Unit&gt; type,
+&nbsp;                                             Square currentLocation) {
+<b class="nc">&nbsp;        List&lt;Square&gt; toDo = new ArrayList&lt;&gt;();</b>
+<b class="nc">&nbsp;        Set&lt;Square&gt; visited = new HashSet&lt;&gt;();</b>
+&nbsp;
+<b class="nc">&nbsp;        toDo.add(currentLocation);</b>
+&nbsp;
+<b class="nc">&nbsp;        while (!toDo.isEmpty()) {</b>
+<b class="nc">&nbsp;            Square square = toDo.remove(0);</b>
+<b class="nc">&nbsp;            Unit unit = findUnit(type, square);</b>
+<b class="nc">&nbsp;            if (unit != null) {</b>
+<b class="nc">&nbsp;                assert unit.hasSquare();</b>
+<b class="nc">&nbsp;                return unit;</b>
+&nbsp;            }
+<b class="nc">&nbsp;            visited.add(square);</b>
+<b class="nc">&nbsp;            for (Direction direction : Direction.values()) {</b>
+<b class="nc">&nbsp;                Square newTarget = square.getSquareAt(direction);</b>
+<b class="nc">&nbsp;                if (!visited.contains(newTarget) &amp;&amp; !toDo.contains(newTarget)) {</b>
+<b class="nc">&nbsp;                    toDo.add(newTarget);</b>
+&nbsp;                }
+&nbsp;            }
+&nbsp;        }
+<b class="nc">&nbsp;        return null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     *  Finds a subtype of Unit in a level.
+&nbsp;     *  This method is very useful for finding the ghosts in the parsed map.
+&nbsp;     *
+&nbsp;     * @param clazz the type to search for.
+&nbsp;     * @param board the board to find the unit in.
+&nbsp;     * @param &lt;T&gt; the return type, same as the type in clazz.
+&nbsp;     *
+&nbsp;     * @return the first unit found of type clazz, or null.
+&nbsp;     */
+&nbsp;    public static &lt;T extends Unit&gt; T findUnitInBoard(Class&lt;T&gt; clazz, Board board) {
+<b class="nc">&nbsp;        for (int y = 0; y &lt; board.getHeight(); y++) {</b>
+<b class="nc">&nbsp;            for (int x = 0; x &lt; board.getWidth(); x++) {</b>
+<b class="nc">&nbsp;                final T ghost = Navigation.findUnit(clazz, board.squareAt(x, y));</b>
+<b class="nc">&nbsp;                if (ghost != null) {</b>
+<b class="nc">&nbsp;                    return ghost;</b>
+&nbsp;                }
+&nbsp;            }
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        return null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Determines whether a square has an occupant of a certain type.
+&nbsp;     *
+&nbsp;     * @param type
+&nbsp;     *            The type to search for.
+&nbsp;     * @param square
+&nbsp;     *            The square to search.
+&nbsp;     * @param &lt;T&gt;
+&nbsp;     *           the type of unit we searched for.
+&nbsp;     *
+&nbsp;     * @return A unit of type T, iff such a unit occupies this square, or
+&nbsp;     *         &lt;code&gt;null&lt;/code&gt; of none does.
+&nbsp;     */
+&nbsp;    @SuppressWarnings(&quot;unchecked&quot;)
+&nbsp;    public static &lt;T extends Unit&gt; T findUnit(Class&lt;T&gt; type, Square square) {
+<b class="nc">&nbsp;        for (Unit unit : square.getOccupants()) {</b>
+<b class="nc">&nbsp;            if (type.isInstance(unit)) {</b>
+<b class="nc">&nbsp;                assert unit.hasSquare();</b>
+<b class="nc">&nbsp;                return (T) unit;</b>
+&nbsp;            }
+&nbsp;        }
+<b class="nc">&nbsp;        return null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Helper class to keep track of the path.
+&nbsp;     *
+&nbsp;     * @author Jeroen Roosen
+&nbsp;     */
+&nbsp;    private static final class Node {
+&nbsp;
+&nbsp;        /**
+&nbsp;         * The direction for this node, which is &lt;code&gt;null&lt;/code&gt; for the root
+&nbsp;         * node.
+&nbsp;         */
+&nbsp;        private final Direction direction;
+&nbsp;
+&nbsp;        /**
+&nbsp;         * The parent node, which is &lt;code&gt;null&lt;/code&gt; for the root node.
+&nbsp;         */
+&nbsp;        private final Node parent;
+&nbsp;
+&nbsp;        /**
+&nbsp;         * The square associated with this node.
+&nbsp;         */
+&nbsp;        private final Square square;
+&nbsp;
+&nbsp;        /**
+&nbsp;         * Creates a new node.
+&nbsp;         *
+&nbsp;         * @param direction
+&nbsp;         *            The direction, which is &lt;code&gt;null&lt;/code&gt; for the root
+&nbsp;         *            node.
+&nbsp;         * @param square
+&nbsp;         *            The square.
+&nbsp;         * @param parent
+&nbsp;         *            The parent node, which is &lt;code&gt;null&lt;/code&gt; for the root
+&nbsp;         *            node.
+&nbsp;         */
+<b class="nc">&nbsp;        Node(Direction direction, Square square, Node parent) {</b>
+<b class="nc">&nbsp;            this.direction = direction;</b>
+<b class="nc">&nbsp;            this.square = square;</b>
+<b class="nc">&nbsp;            this.parent = parent;</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        /**
+&nbsp;         * @return The direction for this node, or &lt;code&gt;null&lt;/code&gt; if this
+&nbsp;         *         node is a root node.
+&nbsp;         */
+&nbsp;        private Direction getDirection() {
+<b class="nc">&nbsp;            return direction;</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        /**
+&nbsp;         * @return The square for this node.
+&nbsp;         */
+&nbsp;        private Square getSquare() {
+<b class="nc">&nbsp;            return square;</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        /**
+&nbsp;         * Returns the list of values from the root of the tree to this node.
+&nbsp;         *
+&nbsp;         * @return The list of values from the root of the tree to this node.
+&nbsp;         */
+&nbsp;        private List&lt;Direction&gt; getPath() {
+<b class="nc">&nbsp;            if (parent == null) {</b>
+<b class="nc">&nbsp;                return new ArrayList&lt;&gt;();</b>
+&nbsp;            }
+<b class="nc">&nbsp;            List&lt;Direction&gt; path = parent.getPath();</b>
+<b class="nc">&nbsp;            path.add(getDirection());</b>
+<b class="nc">&nbsp;            return path;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-03-12 17:36</div>
+</div>
+</body>
+</html>

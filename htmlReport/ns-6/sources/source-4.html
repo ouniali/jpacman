@@ -1,0 +1,331 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > LevelFactory</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">nl.tudelft.jpacman.level</a>
+</div>
+
+<h1>Coverage Summary for Class: LevelFactory (nl.tudelft.jpacman.level)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">LevelFactory</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/16)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">LevelFactory$RandomGhost</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/11)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/27)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package nl.tudelft.jpacman.level;
+&nbsp;
+&nbsp;import nl.tudelft.jpacman.board.Board;
+&nbsp;import nl.tudelft.jpacman.board.Direction;
+&nbsp;import nl.tudelft.jpacman.board.Square;
+&nbsp;import nl.tudelft.jpacman.npc.Ghost;
+&nbsp;import nl.tudelft.jpacman.npc.ghost.GhostColor;
+&nbsp;import nl.tudelft.jpacman.npc.ghost.GhostFactory;
+&nbsp;import nl.tudelft.jpacman.points.PointCalculator;
+&nbsp;import nl.tudelft.jpacman.sprite.PacManSprites;
+&nbsp;import nl.tudelft.jpacman.sprite.Sprite;
+&nbsp;
+&nbsp;import java.util.*;
+&nbsp;import java.util.concurrent.ThreadLocalRandom;
+&nbsp;
+&nbsp;/**
+&nbsp; * Factory that creates levels and units.
+&nbsp; *
+&nbsp; * @author Jeroen Roosen 
+&nbsp; */
+&nbsp;public class LevelFactory {
+&nbsp;
+&nbsp;    private static final int GHOSTS = 4;
+&nbsp;    private static final int BLINKY = 0;
+&nbsp;    private static final int INKY = 1;
+&nbsp;    private static final int PINKY = 2;
+&nbsp;    private static final int CLYDE = 3;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * The default value of a pellet.
+&nbsp;     */
+&nbsp;    private static final int PELLET_VALUE = 10;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * The sprite store that provides sprites for units.
+&nbsp;     */
+&nbsp;    private final PacManSprites sprites;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Used to cycle through the various ghost types.
+&nbsp;     */
+&nbsp;    private int ghostIndex;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * The factory providing ghosts.
+&nbsp;     */
+&nbsp;    private final GhostFactory ghostFact;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * The way to calculate points upon collisions.
+&nbsp;     */
+&nbsp;    private final PointCalculator pointCalculator;
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Creates a new level factory.
+&nbsp;     *
+&nbsp;     * @param spriteStore
+&nbsp;     *            The sprite store providing the sprites for units.
+&nbsp;     * @param ghostFactory
+&nbsp;     *            The factory providing ghosts.
+&nbsp;     * @param pointCalculator
+&nbsp;     *            The algorithm to calculate the points.
+&nbsp;     */
+&nbsp;    public LevelFactory(PacManSprites spriteStore,
+&nbsp;                        GhostFactory ghostFactory,
+<b class="nc">&nbsp;                        PointCalculator pointCalculator) {</b>
+<b class="nc">&nbsp;        this.sprites = spriteStore;</b>
+<b class="nc">&nbsp;        this.ghostIndex = -1;</b>
+<b class="nc">&nbsp;        this.ghostFact = ghostFactory;</b>
+<b class="nc">&nbsp;        this.pointCalculator = pointCalculator;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Creates a new level from the provided data.
+&nbsp;     *
+&nbsp;     * @param board
+&nbsp;     *            The board with all ghosts and pellets occupying their squares.
+&nbsp;     * @param ghosts
+&nbsp;     *            A list of all ghosts on the board.
+&nbsp;     * @param startPositions
+&nbsp;     *            A list of squares from which players may start the game.
+&nbsp;     * @return A new level for the board.
+&nbsp;     */
+&nbsp;    public Level createLevel(Board board, List&lt;Ghost&gt; ghosts, List&lt;Square&gt; startPositions) {
+&nbsp;
+&nbsp;        // We&#39;ll adopt the simple collision map for now.
+<b class="nc">&nbsp;        CollisionMap collisionMap = new PlayerCollisions(pointCalculator);</b>
+&nbsp;
+<b class="nc">&nbsp;        return new Level(board, ghosts, startPositions, collisionMap);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Creates a new ghost.
+&nbsp;     *
+&nbsp;     * @return The new ghost.
+&nbsp;     */
+&nbsp;    Ghost createGhost() {
+<b class="nc">&nbsp;        ghostIndex++;</b>
+<b class="nc">&nbsp;        ghostIndex %= GHOSTS;</b>
+<b class="nc">&nbsp;        switch (ghostIndex) {</b>
+&nbsp;            case BLINKY:
+<b class="nc">&nbsp;                return ghostFact.createBlinky();</b>
+&nbsp;            case INKY:
+<b class="nc">&nbsp;                return ghostFact.createInky();</b>
+&nbsp;            case PINKY:
+<b class="nc">&nbsp;                return ghostFact.createPinky();</b>
+&nbsp;            case CLYDE:
+<b class="nc">&nbsp;                return ghostFact.createClyde();</b>
+&nbsp;            default:
+<b class="nc">&nbsp;                return new RandomGhost(sprites.getGhostSprite(GhostColor.RED));</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Creates a new pellet.
+&nbsp;     *
+&nbsp;     * @return The new pellet.
+&nbsp;     */
+&nbsp;    public Pellet createPellet() {
+<b class="nc">&nbsp;        return new Pellet(PELLET_VALUE, sprites.getPelletSprite());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Implementation of an NPC that wanders around randomly.
+&nbsp;     *
+&nbsp;     * @author Jeroen Roosen
+&nbsp;     */
+&nbsp;    private static final class RandomGhost extends Ghost {
+&nbsp;
+&nbsp;        /**
+&nbsp;         * The suggested delay between moves.
+&nbsp;         */
+&nbsp;        private static final long DELAY = 175L;
+&nbsp;
+&nbsp;        /**
+&nbsp;         * Creates a new random ghost.
+&nbsp;         *
+&nbsp;         * @param ghostSprite
+&nbsp;         *            The sprite for the ghost.
+&nbsp;         */
+&nbsp;        RandomGhost(Map&lt;Direction, Sprite&gt; ghostSprite) {
+<b class="nc">&nbsp;            super(ghostSprite, (int) DELAY, 0);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        @Override
+&nbsp;        public Optional&lt;Direction&gt; nextAiMove() {
+<b class="nc">&nbsp;            return Optional.empty();</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        /**
+&nbsp;         * Determines a possible move in a random direction.
+&nbsp;         *
+&nbsp;         * @return A direction in which the ghost can move, or &lt;code&gt;null&lt;/code&gt; if
+&nbsp;         * the ghost is shut in by inaccessible squares.
+&nbsp;         */
+&nbsp;        @Override
+&nbsp;        protected Direction randomMove() {
+<b class="nc">&nbsp;            Square square = getSquare();</b>
+<b class="nc">&nbsp;            List&lt;Direction&gt; directions = new ArrayList&lt;&gt;();</b>
+<b class="nc">&nbsp;            for (Direction direction : Direction.values()) {</b>
+<b class="nc">&nbsp;                if (square.getSquareAt(direction).isAccessibleTo(this)) {</b>
+<b class="nc">&nbsp;                    directions.add(direction);</b>
+&nbsp;                }
+&nbsp;            }
+<b class="nc">&nbsp;            if (directions.isEmpty()) {</b>
+<b class="nc">&nbsp;                return null;</b>
+&nbsp;            }
+<b class="nc">&nbsp;            int i = ThreadLocalRandom.current().nextInt(directions.size());</b>
+<b class="nc">&nbsp;            return directions.get(i);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-03-12 17:36</div>
+</div>
+</body>
+</html>

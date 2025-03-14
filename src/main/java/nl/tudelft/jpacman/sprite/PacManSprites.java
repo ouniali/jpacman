@@ -1,7 +1,7 @@
 package nl.tudelft.jpacman.sprite;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 import nl.tudelft.jpacman.PacmanConfigurationException;
@@ -82,7 +82,7 @@ public class PacManSprites extends SpriteStore {
      * @return The animated sprite facing the given direction.
      */
     private Map<Direction, Sprite> directionSprite(String resource, int frames) {
-        Map<Direction, Sprite> sprite = new HashMap<>();
+        Map<Direction, Sprite> sprite = new EnumMap<>(Direction.class);
 
         Sprite baseImage = loadSprite(resource);
         for (int i = 0; i < DIRECTIONS.length; i++) {

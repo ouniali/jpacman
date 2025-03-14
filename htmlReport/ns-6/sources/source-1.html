@@ -1,0 +1,404 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > CollisionInteractionMap</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">nl.tudelft.jpacman.level</a>
+</div>
+
+<h1>Coverage Summary for Class: CollisionInteractionMap (nl.tudelft.jpacman.level)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CollisionInteractionMap</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/24)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/36)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">CollisionInteractionMap$CollisionHandler</td>
+  </tr>
+  <tr>
+    <td class="name">CollisionInteractionMap$InverseCollisionHandler</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/3)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/24)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/39)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package nl.tudelft.jpacman.level;
+&nbsp;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.HashMap;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Map;
+&nbsp;
+&nbsp;import nl.tudelft.jpacman.board.Unit;
+&nbsp;
+&nbsp;/**
+&nbsp; * A map of possible collisions and their handlers.
+&nbsp; *
+&nbsp; * @author Michael de Jong
+&nbsp; * @author Jeroen Roosen 
+&nbsp; */
+&nbsp;public class CollisionInteractionMap implements CollisionMap {
+&nbsp;
+&nbsp;    /**
+&nbsp;     * The collection of collision handlers.
+&nbsp;     */
+&nbsp;    private final Map&lt;Class&lt;? extends Unit&gt;,
+&nbsp;        Map&lt;Class&lt;? extends Unit&gt;, CollisionHandler&lt;?, ?&gt;&gt;&gt; handlers;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Creates a new, empty collision map.
+&nbsp;     */
+<b class="nc">&nbsp;    public CollisionInteractionMap() {</b>
+<b class="nc">&nbsp;        this.handlers = new HashMap&lt;&gt;();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Adds a two-way collision interaction to this collection, i.e. the
+&nbsp;     * collision handler will be used for both C1 versus C2 and C2 versus C1.
+&nbsp;     *
+&nbsp;     * @param &lt;C1&gt;
+&nbsp;     *            The collider type.
+&nbsp;     * @param &lt;C2&gt;
+&nbsp;     *            The collidee (unit that was moved into) type.
+&nbsp;     *
+&nbsp;     * @param collider
+&nbsp;     *            The collider type.
+&nbsp;     * @param collidee
+&nbsp;     *            The collidee type.
+&nbsp;     * @param handler
+&nbsp;     *            The handler that handles the collision.
+&nbsp;     */
+&nbsp;    public &lt;C1 extends Unit, C2 extends Unit&gt; void onCollision(
+&nbsp;        Class&lt;C1&gt; collider, Class&lt;C2&gt; collidee, CollisionHandler&lt;C1, C2&gt; handler) {
+<b class="nc">&nbsp;        onCollision(collider, collidee, true, handler);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Adds a collision interaction to this collection.
+&nbsp;     *
+&nbsp;     * @param &lt;C1&gt;
+&nbsp;     *            The collider type.
+&nbsp;     * @param &lt;C2&gt;
+&nbsp;     *            The collidee (unit that was moved into) type.
+&nbsp;     *
+&nbsp;     * @param collider
+&nbsp;     *            The collider type.
+&nbsp;     * @param collidee
+&nbsp;     *            The collidee type.
+&nbsp;     * @param symetric
+&nbsp;     *            &lt;code&gt;true&lt;/code&gt; if this collision is used for both
+&nbsp;     *            C1 against C2 and vice versa;
+&nbsp;     *            &lt;code&gt;false&lt;/code&gt; if only for C1 against C2.
+&nbsp;     * @param handler
+&nbsp;     *            The handler that handles the collision.
+&nbsp;     */
+&nbsp;    public &lt;C1 extends Unit, C2 extends Unit&gt; void onCollision(
+&nbsp;        Class&lt;C1&gt; collider, Class&lt;C2&gt; collidee, boolean symetric,
+&nbsp;        CollisionHandler&lt;C1, C2&gt; handler) {
+<b class="nc">&nbsp;        addHandler(collider, collidee, handler);</b>
+<b class="nc">&nbsp;        if (symetric) {</b>
+<b class="nc">&nbsp;            addHandler(collider, collidee, new InverseCollisionHandler&lt;&gt;(handler));</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Adds the collision interaction..
+&nbsp;     *
+&nbsp;     * @param collider
+&nbsp;     *            The collider type.
+&nbsp;     * @param collidee
+&nbsp;     *            The collidee type.
+&nbsp;     * @param handler
+&nbsp;     *            The handler that handles the collision.
+&nbsp;     */
+&nbsp;    private void addHandler(Class&lt;? extends Unit&gt; collider,
+&nbsp;                            Class&lt;? extends Unit&gt; collidee, CollisionHandler&lt;?, ?&gt; handler) {
+<b class="nc">&nbsp;        if (!handlers.containsKey(collider)) {</b>
+<b class="nc">&nbsp;            handlers.put(collider, new HashMap&lt;&gt;());</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        Map&lt;Class&lt;? extends Unit&gt;, CollisionHandler&lt;?, ?&gt;&gt; map = handlers.get(collider);</b>
+<b class="nc">&nbsp;        map.put(collidee, handler);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Handles the collision between two colliding parties, if a suitable
+&nbsp;     * collision handler is listed.
+&nbsp;     *
+&nbsp;     * @param &lt;C1&gt;
+&nbsp;     *            The collider type.
+&nbsp;     * @param &lt;C2&gt;
+&nbsp;     *            The collidee (unit that was moved into) type.
+&nbsp;     *
+&nbsp;     * @param collider
+&nbsp;     *            The collider.
+&nbsp;     * @param collidee
+&nbsp;     *            The collidee.
+&nbsp;     */
+&nbsp;    @SuppressWarnings(&quot;unchecked&quot;)
+&nbsp;    @Override
+&nbsp;    public &lt;C1 extends Unit, C2 extends Unit&gt; void collide(C1 collider,
+&nbsp;                                                           C2 collidee) {
+<b class="nc">&nbsp;        Class&lt;? extends Unit&gt; colliderKey = getMostSpecificClass(handlers, collider.getClass());</b>
+<b class="nc">&nbsp;        if (colliderKey == null) {</b>
+&nbsp;            return;
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        Map&lt;Class&lt;? extends Unit&gt;, CollisionHandler&lt;?, ?&gt;&gt; map = handlers.get(colliderKey);</b>
+<b class="nc">&nbsp;        Class&lt;? extends Unit&gt; collideeKey = getMostSpecificClass(map, collidee.getClass());</b>
+<b class="nc">&nbsp;        if (collideeKey == null) {</b>
+&nbsp;            return;
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        CollisionHandler&lt;C1, C2&gt; collisionHandler = (CollisionHandler&lt;C1, C2&gt;) map.get(collideeKey);</b>
+<b class="nc">&nbsp;        if (collisionHandler == null) {</b>
+&nbsp;            return;
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        collisionHandler.handleCollision(collider, collidee);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Figures out the most specific class that is listed in the map. I.e. if A
+&nbsp;     * extends B and B is listed while requesting A, then B will be returned.
+&nbsp;     *
+&nbsp;     * @param map
+&nbsp;     *            The map with the key collection to find a matching class in.
+&nbsp;     * @param key
+&nbsp;     *            The class to search the most suitable key for.
+&nbsp;     * @return The most specific class from the key collection.
+&nbsp;     */
+&nbsp;    private Class&lt;? extends Unit&gt; getMostSpecificClass(
+&nbsp;        Map&lt;Class&lt;? extends Unit&gt;, ?&gt; map, Class&lt;? extends Unit&gt; key) {
+<b class="nc">&nbsp;        List&lt;Class&lt;? extends Unit&gt;&gt; collideeInheritance = getInheritance(key);</b>
+<b class="nc">&nbsp;        for (Class&lt;? extends Unit&gt; pointer : collideeInheritance) {</b>
+<b class="nc">&nbsp;            if (map.containsKey(pointer)) {</b>
+<b class="nc">&nbsp;                return pointer;</b>
+&nbsp;            }
+&nbsp;        }
+<b class="nc">&nbsp;        return null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns a list of all classes and interfaces the class inherits.
+&nbsp;     *
+&nbsp;     * @param clazz
+&nbsp;     *            The class to create a list of super classes and interfaces
+&nbsp;     *            for.
+&nbsp;     * @return A list of all classes and interfaces the class inherits.
+&nbsp;     */
+&nbsp;    @SuppressWarnings(&quot;unchecked&quot;)
+&nbsp;    private List&lt;Class&lt;? extends Unit&gt;&gt; getInheritance(
+&nbsp;        Class&lt;? extends Unit&gt; clazz) {
+<b class="nc">&nbsp;        List&lt;Class&lt;? extends Unit&gt;&gt; found = new ArrayList&lt;&gt;();</b>
+<b class="nc">&nbsp;        found.add(clazz);</b>
+&nbsp;
+<b class="nc">&nbsp;        int index = 0;</b>
+<b class="nc">&nbsp;        while (found.size() &gt; index) {</b>
+<b class="nc">&nbsp;            Class&lt;?&gt; current = found.get(index);</b>
+<b class="nc">&nbsp;            Class&lt;?&gt; superClass = current.getSuperclass();</b>
+<b class="nc">&nbsp;            if (superClass != null &amp;&amp; Unit.class.isAssignableFrom(superClass)) {</b>
+<b class="nc">&nbsp;                found.add((Class&lt;? extends Unit&gt;) superClass);</b>
+&nbsp;            }
+<b class="nc">&nbsp;            for (Class&lt;?&gt; classInterface : current.getInterfaces()) {</b>
+<b class="nc">&nbsp;                if (Unit.class.isAssignableFrom(classInterface)) {</b>
+<b class="nc">&nbsp;                    found.add((Class&lt;? extends Unit&gt;) classInterface);</b>
+&nbsp;                }
+&nbsp;            }
+<b class="nc">&nbsp;            index++;</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        return found;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Handles the collision between two colliding parties.
+&nbsp;     *
+&nbsp;     * @author Michael de Jong
+&nbsp;     *
+&nbsp;     * @param &lt;C1&gt;
+&nbsp;     *            The collider type.
+&nbsp;     * @param &lt;C2&gt;
+&nbsp;     *            The collidee type.
+&nbsp;     */
+&nbsp;    public interface CollisionHandler&lt;C1 extends Unit, C2 extends Unit&gt; {
+&nbsp;
+&nbsp;        /**
+&nbsp;         * Handles the collision between two colliding parties.
+&nbsp;         *
+&nbsp;         * @param collider
+&nbsp;         *            The collider.
+&nbsp;         * @param collidee
+&nbsp;         *            The collidee.
+&nbsp;         */
+&nbsp;        void handleCollision(C1 collider, C2 collidee);
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * An symmetrical copy of a collision hander.
+&nbsp;     *
+&nbsp;     * @author Michael de Jong
+&nbsp;     *
+&nbsp;     * @param &lt;C1&gt;
+&nbsp;     *            The collider type.
+&nbsp;     * @param &lt;C2&gt;
+&nbsp;     *            The collidee type.
+&nbsp;     */
+&nbsp;    private static class InverseCollisionHandler&lt;C1 extends Unit, C2 extends Unit&gt;
+&nbsp;        implements CollisionHandler&lt;C1, C2&gt; {
+&nbsp;
+&nbsp;        /**
+&nbsp;         * The handler of this collision.
+&nbsp;         */
+&nbsp;        private final CollisionHandler&lt;C2, C1&gt; handler;
+&nbsp;
+&nbsp;        /**
+&nbsp;         * Creates a new collision handler.
+&nbsp;         *
+&nbsp;         * @param handler
+&nbsp;         *            The symmetric handler for this collision.
+&nbsp;         */
+<b class="nc">&nbsp;        InverseCollisionHandler(CollisionHandler&lt;C2, C1&gt; handler) {</b>
+<b class="nc">&nbsp;            this.handler = handler;</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        /**
+&nbsp;         * Handles this collision by flipping the collider and collidee, making
+&nbsp;         * it compatible with the initial collision.
+&nbsp;         */
+&nbsp;        @Override
+&nbsp;        public void handleCollision(C1 collider, C2 collidee) {
+<b class="nc">&nbsp;            handler.handleCollision(collidee, collider);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-03-12 17:36</div>
+</div>
+</body>
+</html>

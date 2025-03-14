@@ -1,0 +1,258 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > PacManUI</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">nl.tudelft.jpacman.ui</a>
+</div>
+
+<h1>Coverage Summary for Class: PacManUI (nl.tudelft.jpacman.ui)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PacManUI</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/32)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package nl.tudelft.jpacman.ui;
+&nbsp;
+&nbsp;import java.awt.BorderLayout;
+&nbsp;import java.awt.Container;
+&nbsp;import java.util.Map;
+&nbsp;import java.util.concurrent.Executors;
+&nbsp;import java.util.concurrent.ScheduledExecutorService;
+&nbsp;import java.util.concurrent.TimeUnit;
+&nbsp;
+&nbsp;import javax.swing.JFrame;
+&nbsp;import javax.swing.JPanel;
+&nbsp;import javax.swing.WindowConstants;
+&nbsp;
+&nbsp;import nl.tudelft.jpacman.game.Game;
+&nbsp;import nl.tudelft.jpacman.ui.ScorePanel.ScoreFormatter;
+&nbsp;import nl.tudelft.jpacman.ui.RemainingLivesPanel.RemainingLivesFormatter;
+&nbsp;
+&nbsp;
+&nbsp;/**
+&nbsp; * The default JPacMan UI frame. The PacManUI consists of the following
+&nbsp; * elements:
+&nbsp; *
+&nbsp; * &lt;ul&gt;
+&nbsp; * &lt;li&gt;A score panel at the top, displaying the score of the player(s).
+&nbsp; * &lt;li&gt;A board panel, displaying the current level, i.e. the board and all units
+&nbsp; * on it.
+&nbsp; * &lt;li&gt;A button panel, containing all buttons provided upon creation.
+&nbsp; * &lt;/ul&gt;
+&nbsp; *
+&nbsp; * @author Jeroen Roosen 
+&nbsp; *
+&nbsp; */
+<b class="nc">&nbsp;public class PacManUI extends JFrame {</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Default serialisation UID.
+&nbsp;     */
+&nbsp;    private static final long serialVersionUID = 1L;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * The desired frame rate interval for the graphics in milliseconds, 40
+&nbsp;     * being 25 fps.
+&nbsp;     */
+&nbsp;    private static final int FRAME_INTERVAL = 40;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * The panel displaying the player scores.
+&nbsp;     */
+&nbsp;    private final ScorePanel scorePanel;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * The panel displaying the remaining lives of the players.
+&nbsp;     */
+&nbsp;    private final RemainingLivesPanel remainingLivesPanel;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * The panel displaying the game.
+&nbsp;     */
+&nbsp;    private final BoardPanel boardPanel;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Creates a new UI for a JPacman game.
+&nbsp;     *
+&nbsp;     * @param game
+&nbsp;     *            The game to play.
+&nbsp;     * @param buttons
+&nbsp;     *            The map of caption-to-action entries that will appear as
+&nbsp;     *            buttons on the interface.
+&nbsp;     * @param keyMappings
+&nbsp;     *            The map of keyCode-to-action entries that will be added as key
+&nbsp;     *            listeners to the interface.
+&nbsp;     * @param scoreFormatter
+&nbsp;     *            The formatter used to display the current score.
+&nbsp;     * @param remainingLivesFormatter
+&nbsp;     *            The formatter used to display the remaining
+&nbsp;     *            lives of the players. If provided, it customizes
+&nbsp;     *            how the remaining lives are displayed.
+&nbsp;     */
+&nbsp;    public PacManUI(final Game game, final Map&lt;String, Action&gt; buttons,
+&nbsp;                    final Map&lt;Integer, Action&gt; keyMappings,
+&nbsp;                    ScoreFormatter scoreFormatter,
+&nbsp;                    RemainingLivesFormatter remainingLivesFormatter) {
+<b class="nc">&nbsp;        super(&quot;JPacman&quot;);</b>
+<b class="nc">&nbsp;        assert game != null;</b>
+<b class="nc">&nbsp;        assert buttons != null;</b>
+<b class="nc">&nbsp;        assert keyMappings != null;</b>
+&nbsp;
+<b class="nc">&nbsp;        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);</b>
+&nbsp;
+<b class="nc">&nbsp;        PacKeyListener keys = new PacKeyListener(keyMappings);</b>
+<b class="nc">&nbsp;        addKeyListener(keys);</b>
+&nbsp;
+<b class="nc">&nbsp;        JPanel buttonPanel = new ButtonPanel(buttons, this);</b>
+&nbsp;
+<b class="nc">&nbsp;        scorePanel = new ScorePanel(game.getPlayers());</b>
+<b class="nc">&nbsp;        if (scoreFormatter != null) {</b>
+<b class="nc">&nbsp;            scorePanel.setScoreFormatter(scoreFormatter);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // Same ScorePanel class, but displays remaining live
+<b class="nc">&nbsp;        remainingLivesPanel = new RemainingLivesPanel(game.getPlayers());</b>
+<b class="nc">&nbsp;        if (remainingLivesFormatter != null) { // Apply remaining lives formatter if provided</b>
+<b class="nc">&nbsp;            remainingLivesPanel.setRemainingLivesFormatter(remainingLivesFormatter);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;
+<b class="nc">&nbsp;        boardPanel = new BoardPanel(game);</b>
+&nbsp;
+<b class="nc">&nbsp;        Container contentPanel = getContentPane();</b>
+<b class="nc">&nbsp;        contentPanel.setLayout(new BorderLayout());</b>
+&nbsp;
+<b class="nc">&nbsp;        JPanel northPanel = new JPanel();</b>
+<b class="nc">&nbsp;        northPanel.setLayout(new BorderLayout());</b>
+&nbsp;
+<b class="nc">&nbsp;        northPanel.add(scorePanel, BorderLayout.WEST);</b>
+<b class="nc">&nbsp;        northPanel.add(remainingLivesPanel, BorderLayout.EAST);</b>
+<b class="nc">&nbsp;        contentPanel.add(northPanel, BorderLayout.NORTH);</b>
+<b class="nc">&nbsp;        contentPanel.add(boardPanel, BorderLayout.CENTER);</b>
+<b class="nc">&nbsp;        contentPanel.add(buttonPanel, BorderLayout.SOUTH);</b>
+&nbsp;
+<b class="nc">&nbsp;        pack();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Starts the &quot;engine&quot;, the thread that redraws the interface at set
+&nbsp;     * intervals.
+&nbsp;     */
+&nbsp;    public void start() {
+<b class="nc">&nbsp;        setVisible(true);</b>
+<b class="nc">&nbsp;        ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();</b>
+<b class="nc">&nbsp;        service.scheduleAtFixedRate(this::nextFrame, 0, FRAME_INTERVAL, TimeUnit.MILLISECONDS);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Draws the next frame, i.e. refreshes the scores and game.
+&nbsp;     */
+&nbsp;    private void nextFrame() {
+<b class="nc">&nbsp;        boardPanel.repaint();</b>
+<b class="nc">&nbsp;        scorePanel.refresh();</b>
+<b class="nc">&nbsp;        remainingLivesPanel.refresh(); // Refresh lives panel as well</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-03-12 17:36</div>
+</div>
+</body>
+</html>

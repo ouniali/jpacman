@@ -1,0 +1,261 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > LevelTest</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">nl.tudelft.jpacman.level</a>
+</div>
+
+<h1>Coverage Summary for Class: LevelTest (nl.tudelft.jpacman.level)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">LevelTest</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/36)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package nl.tudelft.jpacman.level;
+&nbsp;
+&nbsp;import static org.assertj.core.api.Assertions.assertThat;
+&nbsp;
+&nbsp;import static org.mockito.Mockito.mock;
+&nbsp;import static org.mockito.Mockito.times;
+&nbsp;import static org.mockito.Mockito.verify;
+&nbsp;import static org.mockito.Mockito.when;
+&nbsp;import nl.tudelft.jpacman.board.Board;
+&nbsp;import nl.tudelft.jpacman.board.Square;
+&nbsp;import nl.tudelft.jpacman.npc.Ghost;
+&nbsp;
+&nbsp;import com.google.common.collect.Lists;
+&nbsp;import org.junit.jupiter.api.BeforeEach;
+&nbsp;import org.junit.jupiter.api.Test;
+&nbsp;
+&nbsp;/**
+&nbsp; * Tests various aspects of level.
+&nbsp; *
+&nbsp; * @author Jeroen Roosen 
+&nbsp; */
+&nbsp;// The four suppress warnings ignore the same rule, which results in 4 same string literals
+&nbsp;@SuppressWarnings({&quot;PMD.AvoidDuplicateLiterals&quot;, &quot;PMD.TooManyStaticImports&quot;})
+<b class="nc">&nbsp;class LevelTest {</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * The level under test.
+&nbsp;     */
+&nbsp;    private Level level;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * An NPC on this level.
+&nbsp;     */
+<b class="nc">&nbsp;    private final Ghost ghost = mock(Ghost.class);</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Starting position 1.
+&nbsp;     */
+<b class="nc">&nbsp;    private final Square square1 = mock(Square.class);</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Starting position 2.
+&nbsp;     */
+<b class="nc">&nbsp;    private final Square square2 = mock(Square.class);</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * The board for this level.
+&nbsp;     */
+<b class="nc">&nbsp;    private final Board board = mock(Board.class);</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * The collision map.
+&nbsp;     */
+<b class="nc">&nbsp;    private final CollisionMap collisions = mock(CollisionMap.class);</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sets up the level with the default board, a single NPC and a starting
+&nbsp;     * square.
+&nbsp;     */
+&nbsp;    @BeforeEach
+&nbsp;    void setUp() {
+<b class="nc">&nbsp;        final long defaultInterval = 100L;</b>
+<b class="nc">&nbsp;        level = new Level(board, Lists.newArrayList(ghost), Lists.newArrayList(</b>
+&nbsp;            square1, square2), collisions);
+<b class="nc">&nbsp;        when(ghost.getInterval()).thenReturn(defaultInterval);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Validates the state of the level when it isn&#39;t started yet.
+&nbsp;     */
+&nbsp;    @Test
+&nbsp;    void noStart() {
+<b class="nc">&nbsp;        assertThat(level.isInProgress()).isFalse();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Validates the state of the level when it is stopped without starting.
+&nbsp;     */
+&nbsp;    @Test
+&nbsp;    void stop() {
+<b class="nc">&nbsp;        level.stop();</b>
+<b class="nc">&nbsp;        assertThat(level.isInProgress()).isFalse();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Validates the state of the level when it is started.
+&nbsp;     */
+&nbsp;    @Test
+&nbsp;    void start() {
+<b class="nc">&nbsp;        level.start();</b>
+<b class="nc">&nbsp;        assertThat(level.isInProgress()).isTrue();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Validates the state of the level when it is started then stopped.
+&nbsp;     */
+&nbsp;    @Test
+&nbsp;    void startStop() {
+<b class="nc">&nbsp;        level.start();</b>
+<b class="nc">&nbsp;        level.stop();</b>
+<b class="nc">&nbsp;        assertThat(level.isInProgress()).isFalse();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Verifies registering a player puts the player on the correct starting
+&nbsp;     * square.
+&nbsp;     */
+&nbsp;    @Test
+&nbsp;    @SuppressWarnings(&quot;PMD.JUnitTestsShouldIncludeAssert&quot;)
+&nbsp;    void registerPlayer() {
+<b class="nc">&nbsp;        Player p = mock(Player.class);</b>
+<b class="nc">&nbsp;        level.registerPlayer(p);</b>
+<b class="nc">&nbsp;        verify(p).occupy(square1);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Verifies registering a player twice does not do anything.
+&nbsp;     */
+&nbsp;    @Test
+&nbsp;    @SuppressWarnings(&quot;PMD.JUnitTestsShouldIncludeAssert&quot;)
+&nbsp;    void registerPlayerTwice() {
+<b class="nc">&nbsp;        Player p = mock(Player.class);</b>
+<b class="nc">&nbsp;        level.registerPlayer(p);</b>
+<b class="nc">&nbsp;        level.registerPlayer(p);</b>
+<b class="nc">&nbsp;        verify(p, times(1)).occupy(square1);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Verifies registering a second player puts that player on the correct
+&nbsp;     * starting square.
+&nbsp;     */
+&nbsp;    @Test
+&nbsp;    @SuppressWarnings(&quot;PMD.JUnitTestsShouldIncludeAssert&quot;)
+&nbsp;    void registerSecondPlayer() {
+<b class="nc">&nbsp;        Player p1 = mock(Player.class);</b>
+<b class="nc">&nbsp;        Player p2 = mock(Player.class);</b>
+<b class="nc">&nbsp;        level.registerPlayer(p1);</b>
+<b class="nc">&nbsp;        level.registerPlayer(p2);</b>
+<b class="nc">&nbsp;        verify(p2).occupy(square2);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Verifies registering a third player puts the player on the correct
+&nbsp;     * starting square.
+&nbsp;     */
+&nbsp;    @Test
+&nbsp;    @SuppressWarnings(&quot;PMD.JUnitTestsShouldIncludeAssert&quot;)
+&nbsp;    void registerThirdPlayer() {
+<b class="nc">&nbsp;        Player p1 = mock(Player.class);</b>
+<b class="nc">&nbsp;        Player p2 = mock(Player.class);</b>
+<b class="nc">&nbsp;        Player p3 = mock(Player.class);</b>
+<b class="nc">&nbsp;        level.registerPlayer(p1);</b>
+<b class="nc">&nbsp;        level.registerPlayer(p2);</b>
+<b class="nc">&nbsp;        level.registerPlayer(p3);</b>
+<b class="nc">&nbsp;        verify(p3).occupy(square1);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-03-12 17:36</div>
+</div>
+</body>
+</html>

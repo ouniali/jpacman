@@ -36,6 +36,12 @@ class NavigationTest {
     private MapParser parser;
 
     /**
+     * Map forms.
+     */
+    private static final List<String> SIMPLE_MAP = Lists.newArrayList("####", "#  #", "####");
+    private static final List<String> OBSTACLE_MAP = Lists.newArrayList("#####", "# # #", "#####");
+
+    /**
      * Set up the map parser.
      */
     @BeforeEach
@@ -67,13 +73,13 @@ class NavigationTest {
     @Test
     void testNoShortestPath() {
         Board b = parser
-            .parseMap(Lists.newArrayList("#####", "# # #", "#####"))
+            .parseMap(OBSTACLE_MAP)
             .getBoard();
         Square s1 = b.squareAt(1, 1);
         Square s2 = b.squareAt(3, 1);
         List<Direction> path = Navigation
             .shortestPath(s1, s2, mock(Unit.class));
-        assertThat(path).isNull();
+        assertThat(path).isEmpty();
     }
 
     /**
@@ -82,7 +88,7 @@ class NavigationTest {
     @Test
     void testNoTraveller() {
         Board b = parser
-            .parseMap(Lists.newArrayList("#####", "# # #", "#####"))
+            .parseMap(OBSTACLE_MAP)
             .getBoard();
         Square s1 = b.squareAt(1, 1);
         Square s2 = b.squareAt(3, 1);
@@ -95,7 +101,7 @@ class NavigationTest {
      */
     @Test
     void testSimplePath() {
-        Board b = parser.parseMap(Lists.newArrayList("####", "#  #", "####"))
+        Board b = parser.parseMap(SIMPLE_MAP)
             .getBoard();
         Square s1 = b.squareAt(1, 1);
         Square s2 = b.squareAt(2, 1);

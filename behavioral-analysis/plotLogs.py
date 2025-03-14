@@ -11,9 +11,8 @@ moves = list()
 # read log file, line by line
 for line in open(filepath).readlines()[1:]:
     #print line
-
     # Using regular expressions to match log lines
-    groups = re.search("(.*) (.*) (.*) (.*) (.*) (.*)", line) # status, killedbyghost, currdirection, nextDirection, pellets, score
+    groups = re.search(r"(\w+) (\w+) (\w+) (\w+) (\d+) (\d+)", line) # status, killedbyghost, currdirection, nextDirection, pellets, score
 
     # Collect values in lists to be plotted 
     status.append(groups.group(1)) # status (player.isAlive())
@@ -26,11 +25,8 @@ for line in open(filepath).readlines()[1:]:
 
     # collect the sequence of unique moves taken. [N, N, W, W, W, S] becomes [N, W, S]
     d = groups.group(4)
-    if len(moves) == 0:
+    if not moves or moves[-1] != d:
         moves.append(d)
-    elif moves[-1] != d:
-        moves.append(d)
-
 
 
 # Plotting the variables.

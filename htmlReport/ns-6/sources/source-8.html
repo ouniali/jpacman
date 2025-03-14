@@ -1,0 +1,272 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > Player</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">nl.tudelft.jpacman.level</a>
+</div>
+
+<h1>Coverage Summary for Class: Player (nl.tudelft.jpacman.level)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Player</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/26)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package nl.tudelft.jpacman.level;
+&nbsp;
+&nbsp;import java.util.Map;
+&nbsp;
+&nbsp;import nl.tudelft.jpacman.board.Direction;
+&nbsp;import nl.tudelft.jpacman.board.Unit;
+&nbsp;import nl.tudelft.jpacman.sprite.AnimatedSprite;
+&nbsp;import nl.tudelft.jpacman.sprite.Sprite;
+&nbsp;
+&nbsp;/**
+&nbsp; * A player operated unit in our game.
+&nbsp; *
+&nbsp; * @author Jeroen Roosen 
+&nbsp; */
+&nbsp;public class Player extends Unit {
+&nbsp;
+&nbsp;    /**
+&nbsp;     * The amount of points accumulated by this player.
+&nbsp;     */
+&nbsp;    private int score;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * The amount of lives remained.
+&nbsp;     */
+&nbsp;    private int remainingLives;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * The animations for every direction.
+&nbsp;     */
+&nbsp;    private final Map&lt;Direction, Sprite&gt; sprites;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * The animation that is to be played when Pac-Man dies.
+&nbsp;     */
+&nbsp;    private final AnimatedSprite deathSprite;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * &lt;code&gt;true&lt;/code&gt; iff this player is alive.
+&nbsp;     */
+&nbsp;    private boolean alive;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * {@link Unit} iff this player died by collision, &lt;code&gt;null&lt;/code&gt; otherwise.
+&nbsp;     */
+&nbsp;    private Unit killer;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Creates a new player with a score of 0 points.
+&nbsp;     *
+&nbsp;     * @param spriteMap
+&nbsp;     *            A map containing a sprite for this player for every direction.
+&nbsp;     * @param deathAnimation
+&nbsp;     *            The sprite to be shown when this player dies.
+&nbsp;     */
+<b class="nc">&nbsp;    protected Player(Map&lt;Direction, Sprite&gt; spriteMap, AnimatedSprite deathAnimation) {</b>
+<b class="nc">&nbsp;        this.score = 0;</b>
+<b class="nc">&nbsp;        this.alive = true;</b>
+<b class="nc">&nbsp;        this.sprites = spriteMap;</b>
+<b class="nc">&nbsp;        this.deathSprite = deathAnimation;</b>
+<b class="nc">&nbsp;        deathSprite.setAnimating(false);</b>
+<b class="nc">&nbsp;        this.remainingLives = 2; // the player starts with 3 lives</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the number of remaining lives.
+&nbsp;     *
+&nbsp;     * @return The number of remaining lives.
+&nbsp;     */
+&nbsp;    public int getRemainingLives() {
+<b class="nc">&nbsp;        return this.remainingLives;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns whether this player is alive or not.
+&nbsp;     *
+&nbsp;     * @return &lt;code&gt;true&lt;/code&gt; iff the player is alive.
+&nbsp;     */
+&nbsp;    public boolean isAlive() {
+<b class="nc">&nbsp;        return alive;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sets whether this player is alive or not.
+&nbsp;     *
+&nbsp;     * If the player comes back alive, the {@link killer} will be reset.
+&nbsp;     *
+&nbsp;     * @param isAlive
+&nbsp;     *            &lt;code&gt;true&lt;/code&gt; iff this player is alive.
+&nbsp;     */
+&nbsp;    public void setAlive(boolean isAlive) {
+<b class="nc">&nbsp;        if (isAlive &amp;&amp; remainingLives &gt; 0) {</b>
+<b class="nc">&nbsp;            deathSprite.setAnimating(false);</b>
+<b class="nc">&nbsp;            this.killer = null;</b>
+<b class="nc">&nbsp;        } else if (!isAlive &amp;&amp; remainingLives == 0) {</b>
+<b class="nc">&nbsp;            deathSprite.restart();</b>
+&nbsp;        }
+<b class="nc">&nbsp;        this.alive = isAlive;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Handles the loss of a life for this player.
+&nbsp;     */
+&nbsp;    public void loseLife() {
+<b class="nc">&nbsp;        if (remainingLives &gt; 0) {</b>
+<b class="nc">&nbsp;            remainingLives--;</b>
+<b class="nc">&nbsp;        } else if (remainingLives == 0) {</b>
+<b class="nc">&nbsp;            setAlive(false); // Force immediate death</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the unit that caused the death of Pac-Man.
+&nbsp;     *
+&nbsp;     * @return &lt;code&gt;Unit&lt;/code&gt; iff the player died by collision, otherwise &lt;code&gt;null&lt;/code&gt;.
+&nbsp;     */
+&nbsp;    public Unit getKiller() {
+<b class="nc">&nbsp;        return killer;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sets the cause of death.
+&nbsp;     *
+&nbsp;     * @param killer is set if collision with ghost happens.
+&nbsp;     */
+&nbsp;    public void setKiller(Unit killer) {
+<b class="nc">&nbsp;        this.killer =  killer;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the amount of points accumulated by this player.
+&nbsp;     *
+&nbsp;     * @return The amount of points accumulated by this player.
+&nbsp;     */
+&nbsp;    public int getScore() {
+<b class="nc">&nbsp;        return score;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public Sprite getSprite() {
+<b class="nc">&nbsp;        if (isAlive()) {</b>
+<b class="nc">&nbsp;            return sprites.get(getDirection());</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return deathSprite;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Adds points to the score of this player.
+&nbsp;     *
+&nbsp;     * @param points
+&nbsp;     *            The amount of points to add to the points this player already
+&nbsp;     *            has.
+&nbsp;     */
+&nbsp;    public void addPoints(int points) {
+<b class="nc">&nbsp;        score += points;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-03-12 17:36</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,197 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > ImageSprite</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">nl.tudelft.jpacman.sprite</a>
+</div>
+
+<h1>Coverage Summary for Class: ImageSprite (nl.tudelft.jpacman.sprite)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ImageSprite</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/15)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package nl.tudelft.jpacman.sprite;
+&nbsp;
+&nbsp;import java.awt.Graphics;
+&nbsp;import java.awt.GraphicsConfiguration;
+&nbsp;import java.awt.GraphicsEnvironment;
+&nbsp;import java.awt.Image;
+&nbsp;import java.awt.Transparency;
+&nbsp;import java.awt.image.BufferedImage;
+&nbsp;
+&nbsp;/**
+&nbsp; * Basic implementation of a Sprite, it merely consists of a static image.
+&nbsp; *
+&nbsp; * @author Jeroen Roosen 
+&nbsp; */
+&nbsp;public class ImageSprite implements Sprite {
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Internal image.
+&nbsp;     */
+&nbsp;    private final Image image;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Creates a new sprite from an image.
+&nbsp;     *
+&nbsp;     * @param img
+&nbsp;     *            The image to create a sprite from.
+&nbsp;     */
+<b class="nc">&nbsp;    public ImageSprite(Image img) {</b>
+<b class="nc">&nbsp;        this.image = img;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void draw(Graphics graphics, int x, int y, int width, int height) {
+<b class="nc">&nbsp;        graphics.drawImage(image, x, y, x + width, y + height, 0, 0,</b>
+<b class="nc">&nbsp;            image.getWidth(null), image.getHeight(null), null);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public Sprite split(int x, int y, int width, int height) {
+<b class="nc">&nbsp;        if (withinImage(x, y) &amp;&amp; withinImage(x + width - 1, y + height - 1)) {</b>
+<b class="nc">&nbsp;            BufferedImage newImage = newImage(width, height);</b>
+<b class="nc">&nbsp;            newImage.createGraphics().drawImage(image, 0, 0, width, height, x,</b>
+&nbsp;                y, x + width, y + height, null);
+<b class="nc">&nbsp;            return new ImageSprite(newImage);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return new EmptySprite();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private boolean withinImage(int x, int y) {
+<b class="nc">&nbsp;        return x &lt; image.getWidth(null) &amp;&amp; x &gt;= 0 &amp;&amp; y &lt; image.getHeight(null)</b>
+&nbsp;            &amp;&amp; y &gt;= 0;
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Creates a new, empty image of the given width and height. Its
+&nbsp;     * transparency will be a bitmask, so no try ARGB image.
+&nbsp;     *
+&nbsp;     * @param width
+&nbsp;     *            The width of the new image.
+&nbsp;     * @param height
+&nbsp;     *            The height of the new image.
+&nbsp;     * @return The new, empty image.
+&nbsp;     */
+&nbsp;    private BufferedImage newImage(int width, int height) {
+&nbsp;        GraphicsConfiguration gc = GraphicsEnvironment
+<b class="nc">&nbsp;            .getLocalGraphicsEnvironment().getDefaultScreenDevice()</b>
+<b class="nc">&nbsp;            .getDefaultConfiguration();</b>
+<b class="nc">&nbsp;        return gc.createCompatibleImage(width, height, Transparency.BITMASK);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public int getWidth() {
+<b class="nc">&nbsp;        return image.getWidth(null);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public int getHeight() {
+<b class="nc">&nbsp;        return image.getHeight(null);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-03-12 17:36</div>
+</div>
+</body>
+</html>

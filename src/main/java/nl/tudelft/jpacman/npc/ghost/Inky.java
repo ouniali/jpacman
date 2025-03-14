@@ -8,6 +8,7 @@ import nl.tudelft.jpacman.npc.Ghost;
 import nl.tudelft.jpacman.sprite.Sprite;
 
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * <p>
@@ -138,7 +139,7 @@ public class Inky extends Ghost {
         if (directions.isEmpty()) {
             return null;
         }
-        int i = new Random().nextInt(directions.size());
+        int i = ThreadLocalRandom.current().nextInt(directions.size());
         return directions.get(i);
     }
 }

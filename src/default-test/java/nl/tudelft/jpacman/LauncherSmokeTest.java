@@ -90,9 +90,23 @@ public class LauncherSmokeTest {
         // Here we do it just to let the monsters move.
         Thread.sleep(500L);
 
-        // we're close to monsters, this will get us killed.
+        // Check that the player still has 3 lives before encountering a ghost
+        assertThat(player.getRemainingLives()).isEqualTo(2);
+        assertThat(player.isAlive()).isTrue();
+
+        // 1st Collision with a ghost
         move(game, Direction.WEST, 10);
+        assertThat(player.getRemainingLives()).isEqualTo(1);
+        assertThat(player.isAlive()).isTrue();
+
+        // 2nd Collision with a ghost
         move(game, Direction.EAST, 10);
+        assertThat(player.getRemainingLives()).isEqualTo(0);
+        assertThat(player.isAlive()).isTrue();
+
+        // 3rd Collision with a ghost (game over)
+        move(game, Direction.WEST, 10);
+        assertThat(player.getRemainingLives()).isEqualTo(0);
         assertThat(player.isAlive()).isFalse();
 
         game.stop();

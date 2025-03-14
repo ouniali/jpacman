@@ -13,6 +13,8 @@ import javax.swing.WindowConstants;
 
 import nl.tudelft.jpacman.game.Game;
 import nl.tudelft.jpacman.ui.ScorePanel.ScoreFormatter;
+import nl.tudelft.jpacman.ui.RemainingLivesPanel.RemainingLivesFormatter;
+
 
 /**
  * The default JPacMan UI frame. The PacManUI consists of the following
@@ -47,6 +49,11 @@ public class PacManUI extends JFrame {
     private final ScorePanel scorePanel;
 
     /**
+     * The panel displaying the remaining lives of the players.
+     */
+    private final RemainingLivesPanel remainingLivesPanel;
+
+    /**
      * The panel displaying the game.
      */
     private final BoardPanel boardPanel;
@@ -64,10 +71,15 @@ public class PacManUI extends JFrame {
      *            listeners to the interface.
      * @param scoreFormatter
      *            The formatter used to display the current score.
+     * @param remainingLivesFormatter
+     *            The formatter used to display the remaining
+     *            lives of the players. If provided, it customizes
+     *            how the remaining lives are displayed.
      */
     public PacManUI(final Game game, final Map<String, Action> buttons,
                     final Map<Integer, Action> keyMappings,
-                    ScoreFormatter scoreFormatter) {
+                    ScoreFormatter scoreFormatter,
+                    RemainingLivesFormatter remainingLivesFormatter) {
         super("JPacman");
         assert game != null;
         assert buttons != null;
@@ -85,13 +97,26 @@ public class PacManUI extends JFrame {
             scorePanel.setScoreFormatter(scoreFormatter);
         }
 
+        // Same ScorePanel class, but displays remaining live
+        remainingLivesPanel = new RemainingLivesPanel(game.getPlayers());
+        if (remainingLivesFormatter != null) { // Apply remaining lives formatter if provided
+            remainingLivesPanel.setRemainingLivesFormatter(remainingLivesFormatter);
+        }
+
+
         boardPanel = new BoardPanel(game);
 
         Container contentPanel = getContentPane();
         contentPanel.setLayout(new BorderLayout());
-        contentPanel.add(buttonPanel, BorderLayout.SOUTH);
-        contentPanel.add(scorePanel, BorderLayout.NORTH);
+
+        JPanel northPanel = new JPanel();
+        northPanel.setLayout(new BorderLayout());
+
+        northPanel.add(scorePanel, BorderLayout.WEST);
+        northPanel.add(remainingLivesPanel, BorderLayout.EAST);
+        contentPanel.add(northPanel, BorderLayout.NORTH);
         contentPanel.add(boardPanel, BorderLayout.CENTER);
+        contentPanel.add(buttonPanel, BorderLayout.SOUTH);
 
         pack();
     }
@@ -112,5 +137,6 @@ public class PacManUI extends JFrame {
     private void nextFrame() {
         boardPanel.repaint();
         scorePanel.refresh();
+        remainingLivesPanel.refresh(); // Refresh lives panel as well
     }
 }
