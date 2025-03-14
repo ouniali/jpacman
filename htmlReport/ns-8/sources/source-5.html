@@ -1,0 +1,261 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > Inky</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">nl.tudelft.jpacman.npc.ghost</a>
+</div>
+
+<h1>Coverage Summary for Class: Inky (nl.tudelft.jpacman.npc.ghost)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Inky</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/22)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/30)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package nl.tudelft.jpacman.npc.ghost;
+&nbsp;
+&nbsp;import nl.tudelft.jpacman.board.Direction;
+&nbsp;import nl.tudelft.jpacman.board.Square;
+&nbsp;import nl.tudelft.jpacman.board.Unit;
+&nbsp;import nl.tudelft.jpacman.level.Player;
+&nbsp;import nl.tudelft.jpacman.npc.Ghost;
+&nbsp;import nl.tudelft.jpacman.sprite.Sprite;
+&nbsp;
+&nbsp;import java.util.*;
+&nbsp;import java.util.concurrent.ThreadLocalRandom;
+&nbsp;
+&nbsp;/**
+&nbsp; * &lt;p&gt;
+&nbsp; * An implementation of the classic Pac-Man ghost Inky.
+&nbsp; * &lt;/p&gt;
+&nbsp; * &lt;b&gt;AI:&lt;/b&gt; Inky has the most complicated AI of all. Inky considers two things: Blinky&#39;s
+&nbsp; * location, and the location two grid spaces ahead of Pac-Man. Inky draws a
+&nbsp; * line from Blinky to the spot that is two squares in front of Pac-Man and
+&nbsp; * extends that line twice as far. Therefore, if Inky is alongside Blinky
+&nbsp; * when they are behind Pac-Man, Inky will usually follow Blinky the whole
+&nbsp; * time. But if Inky is in front of Pac-Man when Blinky is far behind him,
+&nbsp; * Inky tends to want to move away from Pac-Man (in reality, to a point very
+&nbsp; * far ahead of Pac-Man). Inky is affected by a similar targeting bug that
+&nbsp; * affects Speedy. When Pac-Man is moving or facing up, the spot Inky uses to
+&nbsp; * draw the line is two squares above and left of Pac-Man.
+&nbsp; * &lt;p&gt;
+&nbsp; * Source: http://strategywiki.org/wiki/Pac-Man/Getting_Started
+&nbsp; * &lt;/p&gt;
+&nbsp; *
+&nbsp; * @author Jeroen Roosen
+&nbsp; */
+<b class="nc">&nbsp;public class Inky extends Ghost {</b>
+&nbsp;
+&nbsp;    private static final int SQUARES_AHEAD = 2;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * The variation in intervals, this makes the ghosts look more dynamic and
+&nbsp;     * less predictable.
+&nbsp;     */
+&nbsp;    private static final int INTERVAL_VARIATION = 50;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * The base movement interval.
+&nbsp;     */
+&nbsp;    private static final int MOVE_INTERVAL = 250;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Creates a new &quot;Inky&quot;.
+&nbsp;     *
+&nbsp;     * @param spriteMap The sprites for this ghost.
+&nbsp;     */
+&nbsp;    public Inky(Map&lt;Direction, Sprite&gt; spriteMap) {
+<b class="nc">&nbsp;        super(spriteMap, MOVE_INTERVAL, INTERVAL_VARIATION);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * {@inheritDoc}
+&nbsp;     *
+&nbsp;     * &lt;p&gt;
+&nbsp;     * Inky has the most complicated AI of all. Inky considers two things: Blinky&#39;s
+&nbsp;     * location, and the location two grid spaces ahead of Pac-Man. Inky
+&nbsp;     * draws a line from Blinky to the spot that is two squares in front of
+&nbsp;     * Pac-Man and extends that line twice as far. Therefore, if Inky is
+&nbsp;     * alongside Blinky when they are behind Pac-Man, Inky will usually
+&nbsp;     * follow Blinky the whole time. But if Inky is in front of Pac-Man when
+&nbsp;     * Blinky is far behind him, Inky tends to want to move away from Pac-Man
+&nbsp;     * (in reality, to a point very far ahead of Pac-Man). Inky is affected
+&nbsp;     * by a similar targeting bug that affects Speedy. When Pac-Man is moving or
+&nbsp;     * facing up, the spot Inky uses to draw the line is two squares above
+&nbsp;     * and left of Pac-Man.
+&nbsp;     * &lt;/p&gt;
+&nbsp;     *
+&nbsp;     * &lt;p&gt;
+&nbsp;     * &lt;b&gt;Implementation:&lt;/b&gt;
+&nbsp;     * To actually implement this in jpacman we have the following approximation:
+&nbsp;     * first determine the square of Blinky (A) and the square 2
+&nbsp;     * squares away from Pac-Man (B). Then determine the shortest path from A to
+&nbsp;     * B regardless of terrain and walk that same path from B. This is the
+&nbsp;     * destination.
+&nbsp;     * &lt;/p&gt;
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public Optional&lt;Direction&gt; nextAiMove() {
+<b class="nc">&nbsp;        assert hasSquare();</b>
+<b class="nc">&nbsp;        Unit blinky = Navigation.findNearest(Blinky.class, getSquare());</b>
+<b class="nc">&nbsp;        Unit player = Navigation.findNearest(Player.class, getSquare());</b>
+&nbsp;
+<b class="nc">&nbsp;        if (blinky == null || player == null) {</b>
+<b class="nc">&nbsp;            return Optional.empty();</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        assert player.hasSquare();</b>
+<b class="nc">&nbsp;        Square playerDestination = player.squaresAheadOf(SQUARES_AHEAD);</b>
+&nbsp;
+<b class="nc">&nbsp;        List&lt;Direction&gt; firstHalf = Navigation.shortestPath(blinky.getSquare(),</b>
+&nbsp;            playerDestination, null);
+&nbsp;
+<b class="nc">&nbsp;        if (firstHalf == null) {</b>
+<b class="nc">&nbsp;            return Optional.empty();</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        Square destination = followPath(firstHalf, playerDestination);</b>
+<b class="nc">&nbsp;        List&lt;Direction&gt; path = Navigation.shortestPath(getSquare(),</b>
+&nbsp;            destination, this);
+&nbsp;
+<b class="nc">&nbsp;        if (path != null &amp;&amp; !path.isEmpty()) {</b>
+<b class="nc">&nbsp;            return Optional.ofNullable(path.get(0));</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return Optional.empty();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    private Square followPath(List&lt;Direction&gt; directions, Square start) {
+<b class="nc">&nbsp;        Square destination = start;</b>
+&nbsp;
+<b class="nc">&nbsp;        for (Direction d : directions) {</b>
+<b class="nc">&nbsp;            destination = destination.getSquareAt(d);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        return destination;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Determines a possible move in a random direction.
+&nbsp;     *
+&nbsp;     * @return A direction in which the ghost can move, or &lt;code&gt;null&lt;/code&gt; if
+&nbsp;     * the ghost is shut in by inaccessible squares.
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    protected Direction randomMove() {
+<b class="nc">&nbsp;        Square square = getSquare();</b>
+<b class="nc">&nbsp;        List&lt;Direction&gt; directions = new ArrayList&lt;&gt;();</b>
+<b class="nc">&nbsp;        for (Direction direction : Direction.values()) {</b>
+<b class="nc">&nbsp;            if (square.getSquareAt(direction).isAccessibleTo(this)) {</b>
+<b class="nc">&nbsp;                directions.add(direction);</b>
+&nbsp;            }
+&nbsp;        }
+<b class="nc">&nbsp;        if (directions.isEmpty()) {</b>
+<b class="nc">&nbsp;            return null;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        int i = ThreadLocalRandom.current().nextInt(directions.size());</b>
+<b class="nc">&nbsp;        return directions.get(i);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-03-12 17:36</div>
+</div>
+</body>
+</html>

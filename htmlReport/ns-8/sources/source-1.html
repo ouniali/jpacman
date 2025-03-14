@@ -1,0 +1,237 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > Blinky</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">nl.tudelft.jpacman.npc.ghost</a>
+</div>
+
+<h1>Coverage Summary for Class: Blinky (nl.tudelft.jpacman.npc.ghost)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Blinky</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/21)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package nl.tudelft.jpacman.npc.ghost;
+&nbsp;
+&nbsp;import nl.tudelft.jpacman.board.Direction;
+&nbsp;import nl.tudelft.jpacman.board.Square;
+&nbsp;import nl.tudelft.jpacman.board.Unit;
+&nbsp;import nl.tudelft.jpacman.level.Player;
+&nbsp;import nl.tudelft.jpacman.npc.Ghost;
+&nbsp;import nl.tudelft.jpacman.sprite.Sprite;
+&nbsp;
+&nbsp;import java.util.*;
+&nbsp;import java.util.concurrent.ThreadLocalRandom;
+&nbsp;
+&nbsp;/**
+&nbsp; * &lt;p&gt;
+&nbsp; * An implementation of the classic Pac-Man ghost Shadow.
+&nbsp; * &lt;/p&gt;
+&nbsp; * &lt;p&gt;
+&nbsp; * Nickname: Blinky. As his name implies, Shadow is usually a constant shadow on
+&nbsp; * Pac-Man&#39;s tail. When he&#39;s not patrolling the top-right corner of the maze,
+&nbsp; * Shadow tries to find the quickest route to Pac-Man&#39;s position. Despite the
+&nbsp; * fact that Pinky&#39;s real name is Speedy, Shadow is actually the fastest of the
+&nbsp; * ghosts because of when there are only a few pellets left, Blinky drastically
+&nbsp; * speeds up, which can make him quite deadly. In the original Japanese version,
+&nbsp; * his name is Oikake/Akabei.
+&nbsp; * &lt;/p&gt;
+&nbsp; * &lt;p&gt;
+&nbsp; * &lt;b&gt;AI:&lt;/b&gt; When the ghosts are not patrolling in their home corners (Blinky:
+&nbsp; * top-right, Pinky: top-left, Inky: bottom-right, Clyde: bottom-left), Blinky
+&nbsp; * will attempt to shorten the distance between Pac-Man and himself. If he has
+&nbsp; * to choose between shortening the horizontal or vertical distance, he will
+&nbsp; * choose to shorten whichever is greatest. For example, if Pac-Man is four grid
+&nbsp; * spaces to the left, and seven grid spaces above Blinky, he&#39;ll try to move up
+&nbsp; * towards Pac-Man before he moves to the left.
+&nbsp; * &lt;/p&gt;
+&nbsp; * &lt;p&gt;
+&nbsp; * Source: http://strategywiki.org/wiki/Pac-Man/Getting_Started
+&nbsp; * &lt;/p&gt;
+&nbsp; *
+&nbsp; * @author Jeroen Roosen 
+&nbsp; *
+&nbsp; */
+<b class="nc">&nbsp;public class Blinky extends Ghost {</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * The variation in intervals, this makes the ghosts look more dynamic and
+&nbsp;     * less predictable.
+&nbsp;     */
+&nbsp;    private static final int INTERVAL_VARIATION = 50;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * The base movement interval.
+&nbsp;     */
+&nbsp;    private static final int MOVE_INTERVAL = 250;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Creates a new &quot;Blinky&quot;, a.k.a. &quot;Shadow&quot;.
+&nbsp;     *
+&nbsp;     * @param spriteMap
+&nbsp;     *            The sprites for this ghost.
+&nbsp;     */
+&nbsp;    // TODO Blinky should speed up when there are a few pellets left, but he
+&nbsp;    // has no way to find out how many there are.
+&nbsp;    public Blinky(Map&lt;Direction, Sprite&gt; spriteMap) {
+<b class="nc">&nbsp;        super(spriteMap, MOVE_INTERVAL, INTERVAL_VARIATION);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * {@inheritDoc}
+&nbsp;     *
+&nbsp;     * &lt;p&gt;
+&nbsp;     * When the ghosts are not patrolling in their home corners (Blinky:
+&nbsp;     * top-right, Pinky: top-left, Inky: bottom-right, Clyde: bottom-left),
+&nbsp;     * Blinky will attempt to shorten the distance between Pac-Man and himself.
+&nbsp;     * If he has to choose between shortening the horizontal or vertical
+&nbsp;     * distance, he will choose to shorten whichever is greatest. For example,
+&nbsp;     * if Pac-Man is four grid spaces to the left, and seven grid spaces above
+&nbsp;     * Blinky, he&#39;ll try to move up towards Pac-Man before he moves to the left.
+&nbsp;     * &lt;/p&gt;
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public Optional&lt;Direction&gt; nextAiMove() {
+<b class="nc">&nbsp;        assert hasSquare();</b>
+&nbsp;
+&nbsp;        // TODO Blinky should patrol his corner every once in a while
+&nbsp;        // TODO Implement his actual behaviour instead of simply chasing.
+<b class="nc">&nbsp;        Unit nearest = Navigation.findNearest(Player.class, getSquare());</b>
+<b class="nc">&nbsp;        if (nearest == null) {</b>
+<b class="nc">&nbsp;            return Optional.empty();</b>
+&nbsp;        }
+<b class="nc">&nbsp;        assert nearest.hasSquare();</b>
+<b class="nc">&nbsp;        Square target = nearest.getSquare();</b>
+&nbsp;
+<b class="nc">&nbsp;        List&lt;Direction&gt; path = Navigation.shortestPath(getSquare(), target, this);</b>
+<b class="nc">&nbsp;        if (path != null &amp;&amp; !path.isEmpty()) {</b>
+<b class="nc">&nbsp;            return Optional.ofNullable(path.get(0));</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return Optional.empty();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Determines a possible move in a random direction.
+&nbsp;     *
+&nbsp;     * @return A direction in which the ghost can move, or &lt;code&gt;null&lt;/code&gt; if
+&nbsp;     * the ghost is shut in by inaccessible squares.
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    protected Direction randomMove() {
+<b class="nc">&nbsp;        Square square = getSquare();</b>
+<b class="nc">&nbsp;        List&lt;Direction&gt; directions = new ArrayList&lt;&gt;();</b>
+<b class="nc">&nbsp;        for (Direction direction : Direction.values()) {</b>
+<b class="nc">&nbsp;            if (square.getSquareAt(direction).isAccessibleTo(this)) {</b>
+<b class="nc">&nbsp;                directions.add(direction);</b>
+&nbsp;            }
+&nbsp;        }
+<b class="nc">&nbsp;        if (directions.isEmpty()) {</b>
+<b class="nc">&nbsp;            return null;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        int i = ThreadLocalRandom.current().nextInt(directions.size());</b>
+<b class="nc">&nbsp;        return directions.get(i);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-03-12 17:36</div>
+</div>
+</body>
+</html>

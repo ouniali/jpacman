@@ -1,0 +1,250 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > Clyde</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">nl.tudelft.jpacman.npc.ghost</a>
+</div>
+
+<h1>Coverage Summary for Class: Clyde (nl.tudelft.jpacman.npc.ghost)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Clyde</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/18)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/29)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package nl.tudelft.jpacman.npc.ghost;
+&nbsp;
+&nbsp;import nl.tudelft.jpacman.board.Direction;
+&nbsp;import nl.tudelft.jpacman.board.Square;
+&nbsp;import nl.tudelft.jpacman.board.Unit;
+&nbsp;import nl.tudelft.jpacman.level.Player;
+&nbsp;import nl.tudelft.jpacman.npc.Ghost;
+&nbsp;import nl.tudelft.jpacman.sprite.Sprite;
+&nbsp;
+&nbsp;import java.util.*;
+&nbsp;import java.util.concurrent.ThreadLocalRandom;
+&nbsp;
+&nbsp;/**
+&nbsp; * &lt;p&gt;
+&nbsp; * An implementation of the classic Pac-Man ghost Clyde.
+&nbsp; * &lt;/p&gt;
+&nbsp; * &lt;p&gt;
+&nbsp; * Pokey needs a new nickname because out of all the ghosts,
+&nbsp; * Clyde is the least likely to &quot;C&#39;lyde&quot; with Pac-Man. Clyde is always the last
+&nbsp; * ghost out of the regenerator, and the loner of the gang, usually off doing
+&nbsp; * his own thing when not patrolling the bottom-left corner of the maze. His
+&nbsp; * behavior is very random, so while he&#39;s not likely to be following you in hot
+&nbsp; * pursuit with the other ghosts, he is a little less predictable, and still a
+&nbsp; * danger.
+&nbsp; * &lt;/p&gt;
+&nbsp; * &lt;p&gt;
+&nbsp; * &lt;b&gt;AI:&lt;/b&gt; Clyde has two basic AIs, one for when he&#39;s far from Pac-Man, and
+&nbsp; * one for when he is near to Pac-Man. 
+&nbsp; * When Clyde is far away from Pac-Man (beyond eight grid spaces),
+&nbsp; * Clyde behaves very much like Blinky, trying to move to Pac-Man&#39;s exact
+&nbsp; * location. However, when Clyde gets within eight grid spaces of Pac-Man, he
+&nbsp; * automatically changes his behavior and runs away.
+&nbsp; * &lt;/p&gt;
+&nbsp; * &lt;p&gt;
+&nbsp; * Source: http://strategywiki.org/wiki/Pac-Man/Getting_Started
+&nbsp; * &lt;/p&gt;
+&nbsp; *
+&nbsp; * @author Jeroen Roosen
+&nbsp; */
+<b class="nc">&nbsp;public class Clyde extends Ghost {</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * The amount of cells Clyde wants to stay away from Pac Man.
+&nbsp;     */
+&nbsp;    private static final int SHYNESS = 8;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * The variation in intervals, this makes the ghosts look more dynamic and
+&nbsp;     * less predictable.
+&nbsp;     */
+&nbsp;    private static final int INTERVAL_VARIATION = 50;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * The base movement interval.
+&nbsp;     */
+&nbsp;    private static final int MOVE_INTERVAL = 250;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * A map of opposite directions.
+&nbsp;     */
+<b class="nc">&nbsp;    private static final Map&lt;Direction, Direction&gt; OPPOSITES = new EnumMap&lt;&gt;(Direction.class);</b>
+&nbsp;
+&nbsp;    static {
+<b class="nc">&nbsp;        OPPOSITES.put(Direction.NORTH, Direction.SOUTH);</b>
+<b class="nc">&nbsp;        OPPOSITES.put(Direction.SOUTH, Direction.NORTH);</b>
+<b class="nc">&nbsp;        OPPOSITES.put(Direction.WEST, Direction.EAST);</b>
+<b class="nc">&nbsp;        OPPOSITES.put(Direction.EAST, Direction.WEST);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Creates a new &quot;Clyde&quot;, a.k.a. &quot;Pokey&quot;.
+&nbsp;     *
+&nbsp;     * @param spriteMap The sprites for this ghost.
+&nbsp;     */
+&nbsp;    public Clyde(Map&lt;Direction, Sprite&gt; spriteMap) {
+<b class="nc">&nbsp;        super(spriteMap, MOVE_INTERVAL, INTERVAL_VARIATION);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * {@inheritDoc}
+&nbsp;     *
+&nbsp;     * &lt;p&gt;
+&nbsp;     * Clyde has two basic AIs, one for when he&#39;s far from Pac-Man, and one for
+&nbsp;     * when he is near to Pac-Man. 
+&nbsp;     * When Clyde is far away from Pac-Man (beyond eight grid spaces),
+&nbsp;     * Clyde behaves very much like Blinky, trying to move to Pac-Man&#39;s exact
+&nbsp;     * location. However, when Clyde gets within eight grid spaces of Pac-Man,
+&nbsp;     * he automatically changes his behavior and runs away
+&nbsp;     * &lt;/p&gt;
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public Optional&lt;Direction&gt; nextAiMove() {
+<b class="nc">&nbsp;        assert hasSquare();</b>
+&nbsp;
+<b class="nc">&nbsp;        Unit nearest = Navigation.findNearest(Player.class, getSquare());</b>
+<b class="nc">&nbsp;        if (nearest == null) {</b>
+<b class="nc">&nbsp;            return Optional.empty();</b>
+&nbsp;        }
+<b class="nc">&nbsp;        assert nearest.hasSquare();</b>
+<b class="nc">&nbsp;        Square target = nearest.getSquare();</b>
+&nbsp;
+<b class="nc">&nbsp;        List&lt;Direction&gt; path = Navigation.shortestPath(getSquare(), target, this);</b>
+<b class="nc">&nbsp;        if (path != null &amp;&amp; !path.isEmpty()) {</b>
+<b class="nc">&nbsp;            Direction direction = path.get(0);</b>
+<b class="nc">&nbsp;            if (path.size() &lt;= SHYNESS) {</b>
+<b class="nc">&nbsp;                return Optional.ofNullable(OPPOSITES.get(direction));</b>
+&nbsp;            }
+<b class="nc">&nbsp;            return Optional.of(direction);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return Optional.empty();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Determines a possible move in a random direction.
+&nbsp;     *
+&nbsp;     * @return A direction in which the ghost can move, or &lt;code&gt;null&lt;/code&gt; if
+&nbsp;     * the ghost is shut in by inaccessible squares.
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    protected Direction randomMove() {
+<b class="nc">&nbsp;        Square square = getSquare();</b>
+<b class="nc">&nbsp;        List&lt;Direction&gt; directions = new ArrayList&lt;&gt;();</b>
+<b class="nc">&nbsp;        for (Direction direction : Direction.values()) {</b>
+<b class="nc">&nbsp;            if (square.getSquareAt(direction).isAccessibleTo(this)) {</b>
+<b class="nc">&nbsp;                directions.add(direction);</b>
+&nbsp;            }
+&nbsp;        }
+<b class="nc">&nbsp;        if (directions.isEmpty()) {</b>
+<b class="nc">&nbsp;            return null;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        int i = ThreadLocalRandom.current().nextInt(directions.size());</b>
+<b class="nc">&nbsp;        return directions.get(i);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-03-12 17:36</div>
+</div>
+</body>
+</html>

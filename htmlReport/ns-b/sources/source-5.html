@@ -1,0 +1,293 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > PacManUiBuilder</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">nl.tudelft.jpacman.ui</a>
+</div>
+
+<h1>Coverage Summary for Class: PacManUiBuilder (nl.tudelft.jpacman.ui)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PacManUiBuilder</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/18)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/33)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package nl.tudelft.jpacman.ui;
+&nbsp;
+&nbsp;import java.util.HashMap;
+&nbsp;import java.util.LinkedHashMap;
+&nbsp;import java.util.Map;
+&nbsp;
+&nbsp;import nl.tudelft.jpacman.game.Game;
+&nbsp;import nl.tudelft.jpacman.ui.ScorePanel.ScoreFormatter;
+&nbsp;import nl.tudelft.jpacman.ui.RemainingLivesPanel.RemainingLivesFormatter;
+&nbsp;
+&nbsp;/**
+&nbsp; * Builder for the JPac-Man UI.
+&nbsp; *
+&nbsp; * @author Jeroen Roosen 
+&nbsp; */
+<b class="nc">&nbsp;public class PacManUiBuilder {</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Caption for the default stop button.
+&nbsp;     */
+&nbsp;    private static final String STOP_CAPTION = &quot;Stop&quot;;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Caption for the default start button.
+&nbsp;     */
+&nbsp;    private static final String START_CAPTION = &quot;Start&quot;;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Map of buttons and their actions.
+&nbsp;     */
+&nbsp;    private final Map&lt;String, Action&gt; buttons;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Map of key events and their actions.
+&nbsp;     */
+&nbsp;    private final Map&lt;Integer, Action&gt; keyMappings;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * &lt;code&gt;true&lt;/code&gt; iff this UI has the default buttons.
+&nbsp;     */
+&nbsp;    private boolean defaultButtons;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Way to format the score.
+&nbsp;     */
+<b class="nc">&nbsp;    private ScoreFormatter scoreFormatter = null;</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Way to format remaining lives.
+&nbsp;     */
+<b class="nc">&nbsp;    private RemainingLivesFormatter remainingLivesFormatter =</b>
+&nbsp;        RemainingLivesPanel.DEFAULT_LIVES_FORMATTER;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Creates a new Pac-Man UI builder without any mapped keys or buttons.
+&nbsp;     */
+<b class="nc">&nbsp;    public PacManUiBuilder() {</b>
+<b class="nc">&nbsp;        this.defaultButtons = false;</b>
+<b class="nc">&nbsp;        this.buttons = new LinkedHashMap&lt;&gt;();</b>
+<b class="nc">&nbsp;        this.keyMappings = new HashMap&lt;&gt;();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Creates a new Pac-Man UI with the set keys and buttons.
+&nbsp;     *
+&nbsp;     * @param game
+&nbsp;     *            The game to build the UI for.
+&nbsp;     * @return A new Pac-Man UI with the set keys and buttons.
+&nbsp;     */
+&nbsp;    public PacManUI build(final Game game) {
+<b class="nc">&nbsp;        assert game != null;</b>
+&nbsp;
+<b class="nc">&nbsp;        if (defaultButtons) {</b>
+<b class="nc">&nbsp;            addStartButton(game);</b>
+<b class="nc">&nbsp;            addStopButton(game);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return new PacManUI(game, buttons, keyMappings, scoreFormatter, remainingLivesFormatter);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Adds a button with the caption {@value #STOP_CAPTION} that stops the
+&nbsp;     * game.
+&nbsp;     *
+&nbsp;     * @param game
+&nbsp;     *            The game to stop.
+&nbsp;     */
+&nbsp;    private void addStopButton(final Game game) {
+<b class="nc">&nbsp;        assert game != null;</b>
+&nbsp;
+<b class="nc">&nbsp;        buttons.put(STOP_CAPTION, game::stop);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Adds a button with the caption {@value #START_CAPTION} that starts the
+&nbsp;     * game.
+&nbsp;     *
+&nbsp;     * @param game
+&nbsp;     *            The game to start.
+&nbsp;     */
+&nbsp;    private void addStartButton(final Game game) {
+<b class="nc">&nbsp;        assert game != null;</b>
+&nbsp;
+<b class="nc">&nbsp;        buttons.put(START_CAPTION, game::start);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Adds a key listener to the UI.
+&nbsp;     *
+&nbsp;     * @param keyCode
+&nbsp;     *            The key code of the key as used by {@link java.awt.event.KeyEvent}.
+&nbsp;     * @param action
+&nbsp;     *            The action to perform when the key is pressed.
+&nbsp;     * @return The builder.
+&nbsp;     */
+&nbsp;    public PacManUiBuilder addKey(Integer keyCode, Action action) {
+<b class="nc">&nbsp;        assert keyCode != null;</b>
+<b class="nc">&nbsp;        assert action != null;</b>
+&nbsp;
+<b class="nc">&nbsp;        keyMappings.put(keyCode, action);</b>
+<b class="nc">&nbsp;        return this;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Adds a button to the UI.
+&nbsp;     *
+&nbsp;     * @param caption
+&nbsp;     *            The caption of the button.
+&nbsp;     * @param action
+&nbsp;     *            The action to execute when the button is clicked.
+&nbsp;     * @return The builder.
+&nbsp;     */
+&nbsp;    public PacManUiBuilder addButton(String caption, Action action) {
+<b class="nc">&nbsp;        assert caption != null;</b>
+<b class="nc">&nbsp;        assert !caption.isEmpty();</b>
+<b class="nc">&nbsp;        assert action != null;</b>
+&nbsp;
+<b class="nc">&nbsp;        buttons.put(caption, action);</b>
+<b class="nc">&nbsp;        return this;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Adds a start and stop button to the UI. The actual actions for these
+&nbsp;     * buttons will be added upon building the UI.
+&nbsp;     *
+&nbsp;     * @return The builder.
+&nbsp;     */
+&nbsp;    public PacManUiBuilder withDefaultButtons() {
+<b class="nc">&nbsp;        defaultButtons = true;</b>
+<b class="nc">&nbsp;        buttons.put(START_CAPTION, null);</b>
+<b class="nc">&nbsp;        buttons.put(STOP_CAPTION, null);</b>
+<b class="nc">&nbsp;        return this;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Provide formatter for the score.
+&nbsp;     *
+&nbsp;     * @param scoreFormatter
+&nbsp;     *         The score formatter to be used.
+&nbsp;     *
+&nbsp;     * @return The builder.
+&nbsp;     */
+&nbsp;    public PacManUiBuilder withScoreFormatter(ScoreFormatter scoreFormatter) {
+<b class="nc">&nbsp;        this.scoreFormatter = scoreFormatter;</b>
+<b class="nc">&nbsp;        return this;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Provide formatter for the remaining lives.
+&nbsp;     *
+&nbsp;     * @param remainingLivesFormatter The remaining lives formatter to be used.
+&nbsp;     * @return The builder.
+&nbsp;     */
+&nbsp;    public PacManUiBuilder withRemainingLivesFormatter(RemainingLivesFormatter remainingLivesFormatter) {
+<b class="nc">&nbsp;        this.remainingLivesFormatter = remainingLivesFormatter;</b>
+<b class="nc">&nbsp;        return this;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-03-12 17:36</div>
+</div>
+</body>
+</html>

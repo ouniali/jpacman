@@ -1,0 +1,245 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > JPacmanFuzzer</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">nl.tudelft.jpacman.fuzzer</a>
+</div>
+
+<h1>Coverage Summary for Class: JPacmanFuzzer (nl.tudelft.jpacman.fuzzer)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">JPacmanFuzzer</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/33)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package nl.tudelft.jpacman.fuzzer;
+&nbsp;
+&nbsp;import nl.tudelft.jpacman.Launcher;
+&nbsp;import nl.tudelft.jpacman.board.Direction;
+&nbsp;import nl.tudelft.jpacman.game.Game;
+&nbsp;import nl.tudelft.jpacman.level.Player;
+&nbsp;import org.junit.jupiter.api.AfterEach;
+&nbsp;import org.junit.jupiter.api.BeforeAll;
+&nbsp;import org.junit.jupiter.api.BeforeEach;
+&nbsp;import org.junit.jupiter.api.Disabled;
+&nbsp;import org.junit.jupiter.api.RepeatedTest;
+&nbsp;import org.junit.jupiter.api.RepetitionInfo;
+&nbsp;
+&nbsp;import java.io.BufferedWriter;
+&nbsp;import java.io.File;
+&nbsp;import java.io.FileOutputStream;
+&nbsp;import java.io.IOException;
+&nbsp;import java.io.OutputStreamWriter;
+&nbsp;import java.nio.charset.StandardCharsets;
+&nbsp;import java.util.concurrent.ThreadLocalRandom;
+&nbsp;
+&nbsp;/**
+&nbsp; * A basic fuzzer trying out random moves and writing logs in output files. Number of runs is a
+&nbsp; * tunable parameter. Each run initiates the game and is played until PacMan dies.
+&nbsp; *
+&nbsp; * @author Azqa Nadeem
+&nbsp; */
+&nbsp;@Disabled
+<b class="nc">&nbsp;class JPacmanFuzzer {</b>
+&nbsp;
+&nbsp;    private static final int RUNS = 5;
+&nbsp;    private static final String LOG_HEADER =
+&nbsp;        &quot;isAlive, hasCollided, currentDirection, nextDirection, remainingPellets, score&quot;;
+&nbsp;    private static final String BASE_LOG_DIRECTORY = &quot;behavioral-analysis/logs&quot;;
+&nbsp;
+&nbsp;    private static File logDirectory;
+&nbsp;
+&nbsp;    private Launcher launcher;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sets and cleans up directory for storing logs.
+&nbsp;     *
+&nbsp;     * @throws IOException when file/folder can&#39;t be created.
+&nbsp;     */
+&nbsp;    @BeforeAll
+&nbsp;    static void setUpLogging() throws IOException {
+<b class="nc">&nbsp;        logDirectory = new File(BASE_LOG_DIRECTORY, Long.toString(System.currentTimeMillis()));</b>
+<b class="nc">&nbsp;        if (!logDirectory.exists() &amp;&amp; !logDirectory.mkdirs()) {</b>
+<b class="nc">&nbsp;            throw new IOException(&quot;Directory `behavioral-analysis/` could not be created.&quot;);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Launch the user interface.
+&nbsp;     */
+&nbsp;    @BeforeEach
+&nbsp;    void setUpGame() {
+<b class="nc">&nbsp;        launcher = new Launcher();</b>
+<b class="nc">&nbsp;        launcher.launch();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Quit the user interface when we&#39;re done.
+&nbsp;     *
+&nbsp;     * @throws IOException when log writer cannot be closed.
+&nbsp;     */
+&nbsp;    @AfterEach
+&nbsp;    void tearDown() throws IOException {
+<b class="nc">&nbsp;        launcher.dispose();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Basic fuzzer implementation.
+&nbsp;     *
+&nbsp;     * @param repetitionInfo repeated test information
+&nbsp;     * @throws IOException when the log write created.
+&nbsp;     */
+&nbsp;    @RepeatedTest(RUNS)
+&nbsp;    void fuzzerTest(RepetitionInfo repetitionInfo) throws IOException {
+<b class="nc">&nbsp;        Game game = launcher.getGame();</b>
+<b class="nc">&nbsp;        Direction chosen = Direction.EAST;</b>
+&nbsp;
+<b class="nc">&nbsp;        String logFileName = &quot;log_&quot; + repetitionInfo.getCurrentRepetition() + &quot;.txt&quot;;</b>
+<b class="nc">&nbsp;        File logFile = new File(logDirectory, logFileName);</b>
+&nbsp;
+<b class="nc">&nbsp;        try (BufferedWriter logWriter = new BufferedWriter(new OutputStreamWriter(</b>
+&nbsp;            new FileOutputStream(logFile, true), StandardCharsets.UTF_8))) {
+&nbsp;
+<b class="nc">&nbsp;            logWriter.write(LOG_HEADER);</b>
+&nbsp;
+&nbsp;            try {
+<b class="nc">&nbsp;                game.start();</b>
+&nbsp;
+<b class="nc">&nbsp;                while (game.isInProgress()) {</b>
+<b class="nc">&nbsp;                    chosen = getRandomDirection();</b>
+&nbsp;
+<b class="nc">&nbsp;                    log(logWriter, chosen);</b>
+<b class="nc">&nbsp;                    game.getLevel().move(game.getPlayers().get(0), chosen);</b>
+&nbsp;                }
+<b class="nc">&nbsp;            } catch (RuntimeException e) {</b>
+&nbsp;                // Runtime exceptions should not stop the execution of the fuzzer
+&nbsp;            } finally {
+<b class="nc">&nbsp;                log(logWriter, chosen);</b>
+<b class="nc">&nbsp;                game.stop();</b>
+<b class="nc">&nbsp;            }</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private Direction getRandomDirection() {
+<b class="nc">&nbsp;        return Direction.values()[ThreadLocalRandom.current().nextInt(Direction.values().length)];</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private void log(BufferedWriter logWriter, Direction chosen) throws IOException {
+<b class="nc">&nbsp;        Game game = launcher.getGame();</b>
+<b class="nc">&nbsp;        Player player = game.getPlayers().get(0);</b>
+&nbsp;
+<b class="nc">&nbsp;        logWriter.write(</b>
+<b class="nc">&nbsp;            String.format(</b>
+&nbsp;                &quot;%n%b %b %s %s %d %d&quot;,
+<b class="nc">&nbsp;                player.isAlive(),</b>
+<b class="nc">&nbsp;                (player.getKiller() != null),</b>
+<b class="nc">&nbsp;                player.getDirection(),</b>
+&nbsp;                chosen,
+<b class="nc">&nbsp;                game.getLevel().remainingPellets(),</b>
+<b class="nc">&nbsp;                player.getScore()</b>
+&nbsp;            )
+&nbsp;        );
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-03-12 17:36</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,221 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > SpriteStore</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">nl.tudelft.jpacman.sprite</a>
+</div>
+
+<h1>Coverage Summary for Class: SpriteStore (nl.tudelft.jpacman.sprite)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SpriteStore</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/22)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package nl.tudelft.jpacman.sprite;
+&nbsp;
+&nbsp;import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+&nbsp;
+&nbsp;import java.awt.image.BufferedImage;
+&nbsp;import java.io.IOException;
+&nbsp;import java.io.InputStream;
+&nbsp;import java.util.HashMap;
+&nbsp;import java.util.Map;
+&nbsp;
+&nbsp;import javax.imageio.ImageIO;
+&nbsp;
+&nbsp;/**
+&nbsp; * Utility to load {@link Sprite}s.
+&nbsp; *
+&nbsp; * @author Jeroen Roosen 
+&nbsp; */
+<b class="nc">&nbsp;public class SpriteStore {</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * We only need to load images once, so we keep track
+&nbsp;     * of them in a hash map.
+&nbsp;     */
+&nbsp;    private final Map&lt;String, Sprite&gt; spriteMap;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Create a new sprite store.
+&nbsp;     */
+<b class="nc">&nbsp;    public SpriteStore() {</b>
+<b class="nc">&nbsp;        spriteMap = new HashMap&lt;&gt;();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Loads a sprite from a resource on the class path.
+&nbsp;     * Sprites are loaded once, and then stored in the store
+&nbsp;     * so that they can be efficiently retrieved.
+&nbsp;     *
+&nbsp;     * @param resource
+&nbsp;     *            The resource path.
+&nbsp;     * @return The sprite for the resource.
+&nbsp;     * @throws IOException
+&nbsp;     *             When the resource could not be loaded.
+&nbsp;     */
+&nbsp;    public Sprite loadSprite(String resource) throws IOException {
+<b class="nc">&nbsp;        Sprite result = spriteMap.get(resource);</b>
+<b class="nc">&nbsp;        if (result == null) {</b>
+<b class="nc">&nbsp;            result = loadSpriteFromResource(resource);</b>
+<b class="nc">&nbsp;            spriteMap.put(resource, result);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return result;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Loads a sprite from a resource on the class path.
+&nbsp;     *
+&nbsp;     * @param resource
+&nbsp;     *            The resource path.
+&nbsp;     * @return A new sprite for the resource.
+&nbsp;     * @throws IOException
+&nbsp;     *             When the resource could not be loaded.
+&nbsp;     */
+&nbsp;    @SuppressFBWarnings(
+&nbsp;        value = &quot;RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE&quot;,
+&nbsp;        justification = &quot;false positive in java 11&quot;
+&nbsp;    )
+&nbsp;    private Sprite loadSpriteFromResource(String resource) throws IOException {
+<b class="nc">&nbsp;        try (InputStream input = SpriteStore.class.getResourceAsStream(resource)) {</b>
+<b class="nc">&nbsp;            if (input == null) {</b>
+<b class="nc">&nbsp;                throw new IOException(&quot;Unable to load &quot; + resource + &quot;, resource does not exist.&quot;);</b>
+&nbsp;            }
+<b class="nc">&nbsp;            BufferedImage image = ImageIO.read(input);</b>
+<b class="nc">&nbsp;            return new ImageSprite(image);</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Creates a new {@link AnimatedSprite} from a base image.
+&nbsp;     *
+&nbsp;     * @param baseImage
+&nbsp;     *            The base image to convert into an animation.
+&nbsp;     * @param frames
+&nbsp;     *            The amount of frames of the animation.
+&nbsp;     * @param delay
+&nbsp;     *            The delay between frames.
+&nbsp;     * @param loop
+&nbsp;     *            Whether this sprite is a looping animation or not.
+&nbsp;     * @return The animated sprite.
+&nbsp;     */
+&nbsp;    public AnimatedSprite createAnimatedSprite(Sprite baseImage, int frames,
+&nbsp;                                               int delay, boolean loop) {
+<b class="nc">&nbsp;        assert baseImage != null;</b>
+<b class="nc">&nbsp;        assert frames &gt; 0;</b>
+&nbsp;
+<b class="nc">&nbsp;        int frameWidth = baseImage.getWidth() / frames;</b>
+&nbsp;
+<b class="nc">&nbsp;        Sprite[] animation = new Sprite[frames];</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; frames; i++) {</b>
+<b class="nc">&nbsp;            animation[i] = baseImage.split(i * frameWidth, 0, frameWidth,</b>
+<b class="nc">&nbsp;                baseImage.getHeight());</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        return new AnimatedSprite(animation, delay, loop);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-03-12 17:36</div>
+</div>
+</body>
+</html>

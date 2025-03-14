@@ -1,0 +1,167 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > DefaultPlayerInteractionMap</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">nl.tudelft.jpacman.level</a>
+</div>
+
+<h1>Coverage Summary for Class: DefaultPlayerInteractionMap (nl.tudelft.jpacman.level)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">DefaultPlayerInteractionMap</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/13)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package nl.tudelft.jpacman.level;
+&nbsp;
+&nbsp;import nl.tudelft.jpacman.board.Unit;
+&nbsp;import nl.tudelft.jpacman.npc.Ghost;
+&nbsp;import nl.tudelft.jpacman.points.PointCalculator;
+&nbsp;
+&nbsp;/**
+&nbsp; * An extensible default interaction map for collisions caused by the player.
+&nbsp; *
+&nbsp; * The implementation makes use of the interactionmap, and as such can be easily
+&nbsp; * and declaratively extended when new types of units (ghosts, players, ...) are
+&nbsp; * added.
+&nbsp; *
+&nbsp; * @author Arie van Deursen
+&nbsp; * @author Jeroen Roosen
+&nbsp; *
+&nbsp; */
+&nbsp;public class DefaultPlayerInteractionMap implements CollisionMap {
+&nbsp;
+&nbsp;    private PointCalculator pointCalculator;
+&nbsp;
+<b class="nc">&nbsp;    private final CollisionMap collisions = defaultCollisions();</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Create a simple player-based collision map, informing the
+&nbsp;     * point calculator about points to be added.
+&nbsp;     *
+&nbsp;     * @param pointCalculator
+&nbsp;     *             Strategy for calculating points.
+&nbsp;     */
+<b class="nc">&nbsp;    public DefaultPlayerInteractionMap(PointCalculator pointCalculator) {</b>
+<b class="nc">&nbsp;        this.pointCalculator = pointCalculator;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void collide(Unit mover, Unit movedInto) {
+<b class="nc">&nbsp;        collisions.collide(mover, movedInto);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Creates the default collisions Player-Ghost and Player-Pellet.
+&nbsp;     *
+&nbsp;     * @return The collision map containing collisions for Player-Ghost and
+&nbsp;     *         Player-Pellet.
+&nbsp;     */
+&nbsp;    private CollisionInteractionMap defaultCollisions() {
+<b class="nc">&nbsp;        CollisionInteractionMap collisionMap = new CollisionInteractionMap();</b>
+&nbsp;
+<b class="nc">&nbsp;        collisionMap.onCollision(Player.class, Ghost.class,</b>
+&nbsp;            (player, ghost) -&gt; {
+<b class="nc">&nbsp;                pointCalculator.collidedWithAGhost(player, ghost);</b>
+<b class="nc">&nbsp;                player.setAlive(false);</b>
+<b class="nc">&nbsp;                player.setKiller(ghost);</b>
+&nbsp;            });
+&nbsp;
+<b class="nc">&nbsp;        collisionMap.onCollision(Player.class, Pellet.class,</b>
+&nbsp;            (player, pellet) -&gt; {
+<b class="nc">&nbsp;                pointCalculator.consumedAPellet(player, pellet);</b>
+<b class="nc">&nbsp;                pellet.leaveSquare();</b>
+&nbsp;            });
+<b class="nc">&nbsp;        return collisionMap;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-03-12 17:36</div>
+</div>
+</body>
+</html>

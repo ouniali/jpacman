@@ -1,0 +1,214 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > Ghost</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">nl.tudelft.jpacman.npc</a>
+</div>
+
+<h1>Coverage Summary for Class: Ghost (nl.tudelft.jpacman.npc)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Ghost</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/8)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package nl.tudelft.jpacman.npc;
+&nbsp;
+&nbsp;import nl.tudelft.jpacman.board.Direction;
+&nbsp;import nl.tudelft.jpacman.board.Unit;
+&nbsp;import nl.tudelft.jpacman.sprite.Sprite;
+&nbsp;
+&nbsp;import java.util.Map;
+&nbsp;import java.util.Optional;
+&nbsp;import java.util.concurrent.ThreadLocalRandom;
+&nbsp;
+&nbsp;/**
+&nbsp; * A non-player unit.
+&nbsp; *
+&nbsp; * @author Jeroen Roosen
+&nbsp; */
+&nbsp;public abstract class Ghost extends Unit {
+&nbsp;    /**
+&nbsp;     * The sprite map, one sprite for each direction.
+&nbsp;     */
+&nbsp;    private final Map&lt;Direction, Sprite&gt; sprites;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * The base move interval of the ghost.
+&nbsp;     */
+&nbsp;    private final int moveInterval;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * The random variation added to the {@link #moveInterval}.
+&nbsp;     */
+&nbsp;    private final int intervalVariation;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Calculates the next move for this unit and returns the direction to move
+&nbsp;     * in.
+&nbsp;     * &lt;p&gt;
+&nbsp;     * Precondition: The NPC occupies a square (hasSquare() holds).
+&nbsp;     *
+&nbsp;     * @return The direction to move in, or &lt;code&gt;null&lt;/code&gt; if no move could
+&nbsp;     * be devised.
+&nbsp;     */
+&nbsp;    public Direction nextMove() {
+<b class="nc">&nbsp;        return nextAiMove().orElseGet(this::randomMove);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Tries to calculate a move based on the behaviour of the npc.
+&nbsp;     *
+&nbsp;     * @return an optional containing the move or empty if the current state of the game
+&nbsp;     * makes the ai move impossible
+&nbsp;     */
+&nbsp;    public abstract Optional&lt;Direction&gt; nextAiMove();
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Creates a new ghost.
+&nbsp;     *
+&nbsp;     * @param spriteMap         The sprites for every direction.
+&nbsp;     * @param moveInterval      The base interval of movement.
+&nbsp;     * @param intervalVariation The variation of the interval.
+&nbsp;     */
+<b class="nc">&nbsp;    protected Ghost(Map&lt;Direction, Sprite&gt; spriteMap, int moveInterval, int intervalVariation) {</b>
+<b class="nc">&nbsp;        this.sprites = spriteMap;</b>
+<b class="nc">&nbsp;        this.intervalVariation = intervalVariation;</b>
+<b class="nc">&nbsp;        this.moveInterval = moveInterval;</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public Sprite getSprite() {
+<b class="nc">&nbsp;        return sprites.get(getDirection());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * The time that should be taken between moves.
+&nbsp;     *
+&nbsp;     * @return The suggested delay between moves in milliseconds.
+&nbsp;     */
+&nbsp;    public long getInterval() {
+<b class="nc">&nbsp;        return (long) this.moveInterval + ThreadLocalRandom.current().nextInt(this.intervalVariation);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Determines a possible move in a random direction.
+&nbsp;     *
+&nbsp;     * @return A direction in which the ghost can move, or &lt;code&gt;null&lt;/code&gt; if
+&nbsp;     * the ghost is shut in by inaccessible squares.
+&nbsp;     */
+&nbsp;    protected abstract Direction randomMove();
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Determines a possible move in a random direction.
+&nbsp;     *
+&nbsp;     * @return A direction in which the ghost can move, or &lt;code&gt;null&lt;/code&gt; if
+&nbsp;     * the ghost is shut in by inaccessible squares.
+&nbsp;     */
+&nbsp;    /*protected Direction randomMove() {
+&nbsp;        Square square = getSquare();
+&nbsp;        List&lt;Direction&gt; directions = new ArrayList&lt;&gt;();
+&nbsp;        for (Direction direction : Direction.values()) {
+&nbsp;            if (square.getSquareAt(direction).isAccessibleTo(this)) {
+&nbsp;                directions.add(direction);
+&nbsp;            }
+&nbsp;        }
+&nbsp;        if (directions.isEmpty()) {
+&nbsp;            return null;
+&nbsp;        }
+&nbsp;        int i = ThreadLocalRandom.current().nextInt(directions.size());
+&nbsp;        return directions.get(i);
+&nbsp;    }*/
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-03-12 17:36</div>
+</div>
+</body>
+</html>

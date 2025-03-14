@@ -1,0 +1,125 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > Sprite</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">nl.tudelft.jpacman.sprite</a>
+</div>
+
+<h1>Coverage Summary for Class: Sprite (nl.tudelft.jpacman.sprite)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">Sprite</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package nl.tudelft.jpacman.sprite;
+&nbsp;
+&nbsp;import java.awt.Graphics;
+&nbsp;
+&nbsp;/**
+&nbsp; * Visual representation of some object.
+&nbsp; *
+&nbsp; * @author Jeroen Roosen 
+&nbsp; */
+&nbsp;public interface Sprite {
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Draws the sprite on the provided graphics context.
+&nbsp;     *
+&nbsp;     * @param graphics
+&nbsp;     *            The graphics context to draw.
+&nbsp;     * @param x
+&nbsp;     *            The destination x coordinate to start drawing.
+&nbsp;     * @param y
+&nbsp;     *            The destination y coordinate to start drawing.
+&nbsp;     * @param width
+&nbsp;     *            The width of the destination draw area.
+&nbsp;     * @param height
+&nbsp;     *            The height of the destination draw area.
+&nbsp;     */
+&nbsp;    void draw(Graphics graphics, int x, int y, int width, int height);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns a portion of this sprite as a new Sprite.
+&nbsp;     *
+&nbsp;     * @param x
+&nbsp;     *            The x start coordinate.
+&nbsp;     * @param y
+&nbsp;     *            The y start coordinate.
+&nbsp;     * @param width
+&nbsp;     *            The width of the target sprite.
+&nbsp;     * @param height
+&nbsp;     *            The height of the target sprite.
+&nbsp;     * @return A new sprite of width x height, or a new {@link EmptySprite} if
+&nbsp;     *         the region was not in the current sprite.
+&nbsp;     */
+&nbsp;    Sprite split(int x, int y, int width, int height);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the width of this sprite.
+&nbsp;     *
+&nbsp;     * @return The width in pixels.
+&nbsp;     */
+&nbsp;    int getWidth();
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the height of this sprite.
+&nbsp;     *
+&nbsp;     * @return The height of this sprite in pixels.
+&nbsp;     */
+&nbsp;    int getHeight();
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-03-12 17:36</div>
+</div>
+</body>
+</html>

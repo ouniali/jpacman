@@ -1,0 +1,160 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > BoardTest</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">nl.tudelft.jpacman.board</a>
+</div>
+
+<h1>Coverage Summary for Class: BoardTest (nl.tudelft.jpacman.board)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">BoardTest</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/8)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package nl.tudelft.jpacman.board;
+&nbsp;
+&nbsp;import org.junit.jupiter.api.Test;
+&nbsp;import org.junit.jupiter.params.ParameterizedTest;
+&nbsp;import org.junit.jupiter.params.provider.CsvSource;
+&nbsp;
+&nbsp;import static org.assertj.core.api.Assertions.assertThat;
+&nbsp;import static org.mockito.Mockito.mock;
+&nbsp;
+&nbsp;/**
+&nbsp; * Test various aspects of board.
+&nbsp; *
+&nbsp; * @author Jeroen Roosen 
+&nbsp; */
+<b class="nc">&nbsp;class BoardTest {</b>
+&nbsp;
+&nbsp;    private static final int MAX_WIDTH = 2;
+&nbsp;    private static final int MAX_HEIGHT = 3;
+&nbsp;
+<b class="nc">&nbsp;    private final Square[][] grid = {</b>
+<b class="nc">&nbsp;        { mock(Square.class), mock(Square.class), mock(Square.class) },</b>
+<b class="nc">&nbsp;        { mock(Square.class), mock(Square.class), mock(Square.class) },</b>
+&nbsp;    };
+<b class="nc">&nbsp;    private final Board board = new Board(grid);</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Verifies the board has the correct width.
+&nbsp;     */
+&nbsp;    @Test
+&nbsp;    void verifyWidth() {
+<b class="nc">&nbsp;        assertThat(board.getWidth()).isEqualTo(MAX_WIDTH);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Verifies the board has the correct height.
+&nbsp;     */
+&nbsp;    @Test
+&nbsp;    void verifyHeight() {
+<b class="nc">&nbsp;        assertThat(board.getHeight()).isEqualTo(MAX_HEIGHT);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Verify that squares at key positions are properly set.
+&nbsp;     * @param x Horizontal coordinate of relevant cell.
+&nbsp;     * @param y Vertical coordinate of relevant cell.
+&nbsp;     */
+&nbsp;    @ParameterizedTest
+&nbsp;    @CsvSource({
+&nbsp;            &quot;0, 0&quot;,
+&nbsp;            &quot;1, 2&quot;,
+&nbsp;        &quot;0, 1&quot;
+&nbsp;    })
+&nbsp;    void testSquareAt(int x, int y) {
+<b class="nc">&nbsp;        assertThat(board.squareAt(x, y)).isEqualTo(grid[x][y]);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-03-12 17:36</div>
+</div>
+</body>
+</html>

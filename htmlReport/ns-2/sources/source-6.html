@@ -1,0 +1,246 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > Square</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">nl.tudelft.jpacman.board</a>
+</div>
+
+<h1>Coverage Summary for Class: Square (nl.tudelft.jpacman.board)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Square</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/28)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/23)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package nl.tudelft.jpacman.board;
+&nbsp;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.EnumMap;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Map;
+&nbsp;
+&nbsp;import com.google.common.collect.ImmutableList;
+&nbsp;
+&nbsp;import nl.tudelft.jpacman.sprite.Sprite;
+&nbsp;/**
+&nbsp; * A square on a {@link Board}, which can (or cannot, depending on the type) be
+&nbsp; * occupied by units.
+&nbsp; *
+&nbsp; * @author Jeroen Roosen 
+&nbsp; */
+<b class="nc">&nbsp;public abstract class Square {</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * The units occupying this square, in order of appearance.
+&nbsp;     */
+&nbsp;    private final List&lt;Unit&gt; occupants;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * The collection of squares adjacent to this square.
+&nbsp;     */
+&nbsp;    private final Map&lt;Direction, Square&gt; neighbours;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Creates a new, empty square.
+&nbsp;     */
+<b class="nc">&nbsp;    protected Square() {</b>
+<b class="nc">&nbsp;        this.occupants = new ArrayList&lt;&gt;();</b>
+<b class="nc">&nbsp;        this.neighbours = new EnumMap&lt;&gt;(Direction.class);</b>
+<b class="nc">&nbsp;        assert invariant();</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the square adjacent to this square.
+&nbsp;     *
+&nbsp;     * @param direction
+&nbsp;     *            The direction of the adjacent square.
+&nbsp;     * @return The adjacent square in the given direction.
+&nbsp;     */
+&nbsp;    public Square getSquareAt(Direction direction) {
+<b class="nc">&nbsp;        return neighbours.get(direction);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Links this square to a neighbour in the given direction. Note that this
+&nbsp;     * is a one-way connection.
+&nbsp;     *
+&nbsp;     * @param neighbour
+&nbsp;     *            The neighbour to link.
+&nbsp;     * @param direction
+&nbsp;     *            The direction the new neighbour is in, as seen from this cell.
+&nbsp;     */
+&nbsp;    public void link(Square neighbour, Direction direction) {
+<b class="nc">&nbsp;        neighbours.put(direction, neighbour);</b>
+<b class="nc">&nbsp;        assert invariant();</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns an immutable list of units occupying this square, in the order in
+&nbsp;     * which they occupied this square (i.e. oldest first.)
+&nbsp;     *
+&nbsp;     * @return An immutable list of units occupying this square, in the order in
+&nbsp;     *         which they occupied this square (i.e. oldest first.)
+&nbsp;     */
+&nbsp;    public List&lt;Unit&gt; getOccupants() {
+<b class="nc">&nbsp;        return ImmutableList.copyOf(occupants);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Adds a new occupant to this square.
+&nbsp;     *
+&nbsp;     * @param occupant
+&nbsp;     *            The unit to occupy this square.
+&nbsp;     */
+&nbsp;    void put(Unit occupant) {
+<b class="nc">&nbsp;        assert occupant != null;</b>
+<b class="nc">&nbsp;        assert !occupants.contains(occupant);</b>
+&nbsp;
+<b class="nc">&nbsp;        occupants.add(occupant);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Removes the unit from this square if it was present.
+&nbsp;     *
+&nbsp;     * @param occupant
+&nbsp;     *            The unit to be removed from this square.
+&nbsp;     */
+&nbsp;    void remove(Unit occupant) {
+<b class="nc">&nbsp;        assert occupant != null;</b>
+<b class="nc">&nbsp;        occupants.remove(occupant);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Verifies that all occupants on this square have indeed listed this square
+&nbsp;     * as the square they are currently occupying.
+&nbsp;     *
+&nbsp;     * @return &lt;code&gt;true&lt;/code&gt; iff all occupants of this square have this
+&nbsp;     *         square listed as the square they are currently occupying.
+&nbsp;     */
+&nbsp;    protected final boolean invariant(Square this) {
+<b class="nc">&nbsp;        for (Unit occupant : occupants) {</b>
+<b class="nc">&nbsp;            if (occupant.hasSquare() &amp;&amp; occupant.getSquare() != this) {</b>
+<b class="nc">&nbsp;                return false;</b>
+&nbsp;            }
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        return true;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Determines whether the unit is allowed to occupy this square.
+&nbsp;     *
+&nbsp;     * @param unit
+&nbsp;     *            The unit to grant or deny access.
+&nbsp;     * @return &lt;code&gt;true&lt;/code&gt; iff the unit is allowed to occupy this square.
+&nbsp;     */
+&nbsp;    public abstract boolean isAccessibleTo(Unit unit);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the sprite of this square.
+&nbsp;     *
+&nbsp;     * @return The sprite of this square.
+&nbsp;     */
+&nbsp;    public abstract Sprite getSprite();
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-03-12 17:36</div>
+</div>
+</body>
+</html>

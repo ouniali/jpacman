@@ -1,0 +1,98 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > CollisionMap</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">nl.tudelft.jpacman.level</a>
+</div>
+
+<h1>Coverage Summary for Class: CollisionMap (nl.tudelft.jpacman.level)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">CollisionMap</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package nl.tudelft.jpacman.level;
+&nbsp;
+&nbsp;import nl.tudelft.jpacman.board.Unit;
+&nbsp;
+&nbsp;/**
+&nbsp; * A table containing all (relevant) collisions between different types of
+&nbsp; * units.
+&nbsp; *
+&nbsp; * @author Jeroen Roosen 
+&nbsp; */
+&nbsp;public interface CollisionMap {
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Collides the two units and handles the result of the collision, which may
+&nbsp;     * be nothing at all.
+&nbsp;     *
+&nbsp;     * @param &lt;C1&gt;
+&nbsp;     *            The collider type.
+&nbsp;     * @param &lt;C2&gt;
+&nbsp;     *            The collidee (unit that was moved into) type.
+&nbsp;     *
+&nbsp;     * @param collider
+&nbsp;     *            The unit that causes the collision by occupying a square with
+&nbsp;     *            another unit already on it.
+&nbsp;     * @param collidee
+&nbsp;     *            The unit that is already on the square that is being invaded.
+&nbsp;     */
+&nbsp;    &lt;C1 extends Unit, C2 extends Unit&gt; void collide(C1 collider, C2 collidee);
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-03-12 17:36</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,236 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > ScorePanel</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">nl.tudelft.jpacman.ui</a>
+</div>
+
+<h1>Coverage Summary for Class: ScorePanel (nl.tudelft.jpacman.ui)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ScorePanel</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/23)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">ScorePanel$ScoreFormatter</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/23)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package nl.tudelft.jpacman.ui;
+&nbsp;
+&nbsp;import java.awt.GridLayout;
+&nbsp;import java.util.LinkedHashMap;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Map;
+&nbsp;
+&nbsp;import javax.swing.JLabel;
+&nbsp;import javax.swing.JPanel;
+&nbsp;
+&nbsp;import nl.tudelft.jpacman.level.Player;
+&nbsp;
+&nbsp;/**
+&nbsp; * A panel consisting of a column for each player, with the numbered players on
+&nbsp; * top and their respective scores underneath.
+&nbsp; *
+&nbsp; * @author Jeroen Roosen 
+&nbsp; *
+&nbsp; */
+<b class="nc">&nbsp;public class ScorePanel extends JPanel {</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Default serialisation ID.
+&nbsp;     */
+&nbsp;    private static final long serialVersionUID = 1L;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * The map of players and the labels their scores are on.
+&nbsp;     */
+&nbsp;    private final transient Map&lt;Player, JLabel&gt; scoreLabels;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * The default way in which the score is shown.
+&nbsp;     */
+<b class="nc">&nbsp;    public static final ScoreFormatter DEFAULT_SCORE_FORMATTER =</b>
+<b class="nc">&nbsp;        (Player player) -&gt; String.format(&quot;Score: %3d&quot;, player.getScore());</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * The way to format the score information.
+&nbsp;     */
+&nbsp;    private transient ScoreFormatter scoreFormatter;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Creates a new score panel with a column for each player.
+&nbsp;     *
+&nbsp;     * @param players
+&nbsp;     *            The players to display the scores of.
+&nbsp;     */
+<b class="nc">&nbsp;    public ScorePanel(List&lt;Player&gt; players) {</b>
+<b class="nc">&nbsp;        this.scoreFormatter = DEFAULT_SCORE_FORMATTER;</b>
+<b class="nc">&nbsp;        assert players != null;</b>
+&nbsp;
+<b class="nc">&nbsp;        setLayout(new GridLayout(2, players.size()));</b>
+&nbsp;
+<b class="nc">&nbsp;        for (int i = 1; i &lt;= players.size(); i++) {</b>
+<b class="nc">&nbsp;            add(new JLabel(&quot;Player &quot; + i, 0));</b>
+&nbsp;        }
+<b class="nc">&nbsp;        scoreLabels = new LinkedHashMap&lt;&gt;();</b>
+<b class="nc">&nbsp;        for (Player player : players) {</b>
+<b class="nc">&nbsp;            JLabel scoreLabel = new JLabel(&quot;0&quot;, 0);</b>
+<b class="nc">&nbsp;            scoreLabels.put(player, scoreLabel);</b>
+<b class="nc">&nbsp;            add(scoreLabel);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Refreshes the scores of the players.
+&nbsp;     */
+&nbsp;    protected void refresh() {
+<b class="nc">&nbsp;        for (Map.Entry&lt;Player, JLabel&gt; entry : scoreLabels.entrySet()) {</b>
+<b class="nc">&nbsp;            Player player = entry.getKey();</b>
+<b class="nc">&nbsp;            String score = &quot;&quot;;</b>
+<b class="nc">&nbsp;            if (!player.isAlive()) {</b>
+<b class="nc">&nbsp;                score = &quot;You died. &quot;;</b>
+&nbsp;            }
+<b class="nc">&nbsp;            score += scoreFormatter.format(player);</b>
+<b class="nc">&nbsp;            entry.getValue().setText(score);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Provide means to format the score for a given player.
+&nbsp;     */
+&nbsp;    public interface ScoreFormatter {
+&nbsp;
+&nbsp;        /**
+&nbsp;         * Format the score of a given player.
+&nbsp;         * @param player The player and its score
+&nbsp;         * @return Formatted score.
+&nbsp;         */
+&nbsp;        String format(Player player);
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Let the score panel use a dedicated score formatter.
+&nbsp;     * @param scoreFormatter Score formatter to be used.
+&nbsp;     */
+&nbsp;    public void setScoreFormatter(ScoreFormatter scoreFormatter) {
+<b class="nc">&nbsp;        assert scoreFormatter != null;</b>
+<b class="nc">&nbsp;        this.scoreFormatter = scoreFormatter;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-03-12 17:36</div>
+</div>
+</body>
+</html>

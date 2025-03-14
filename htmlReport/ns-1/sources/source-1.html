@@ -1,0 +1,323 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > Launcher</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">nl.tudelft.jpacman</a>
+</div>
+
+<h1>Coverage Summary for Class: Launcher (nl.tudelft.jpacman)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Launcher</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/22)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/43)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package nl.tudelft.jpacman;
+&nbsp;
+&nbsp;import nl.tudelft.jpacman.board.BoardFactory;
+&nbsp;import nl.tudelft.jpacman.board.Direction;
+&nbsp;import nl.tudelft.jpacman.game.Game;
+&nbsp;import nl.tudelft.jpacman.game.GameFactory;
+&nbsp;import nl.tudelft.jpacman.level.*;
+&nbsp;import nl.tudelft.jpacman.npc.ghost.GhostFactory;
+&nbsp;import nl.tudelft.jpacman.points.PointCalculator;
+&nbsp;import nl.tudelft.jpacman.points.PointCalculatorLoader;
+&nbsp;import nl.tudelft.jpacman.sprite.PacManSprites;
+&nbsp;import nl.tudelft.jpacman.ui.Action;
+&nbsp;import nl.tudelft.jpacman.ui.PacManUI;
+&nbsp;import nl.tudelft.jpacman.ui.PacManUiBuilder;
+&nbsp;
+&nbsp;import java.awt.event.KeyEvent;
+&nbsp;import java.io.IOException;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;/**
+&nbsp; * Creates and launches the JPacMan UI.
+&nbsp; * 
+&nbsp; * @author Jeroen Roosen
+&nbsp; */
+<b class="nc">&nbsp;@SuppressWarnings(&quot;PMD.TooManyMethods&quot;)</b>
+<b class="nc">&nbsp;public class Launcher {</b>
+&nbsp;
+<b class="nc">&nbsp;    private static final PacManSprites SPRITE_STORE = new PacManSprites();</b>
+&nbsp;
+&nbsp;    public static final String DEFAULT_MAP = &quot;/board.txt&quot;;
+<b class="nc">&nbsp;    private String levelMap = DEFAULT_MAP;</b>
+&nbsp;
+&nbsp;    private PacManUI pacManUI;
+&nbsp;    private Game game;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * @return The game object this launcher will start when {@link #launch()}
+&nbsp;     *         is called.
+&nbsp;     */
+&nbsp;    public Game getGame() {
+<b class="nc">&nbsp;        return game;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * The map file used to populate the level.
+&nbsp;     *
+&nbsp;     * @return The name of the map file.
+&nbsp;     */
+&nbsp;    protected String getLevelMap() {
+<b class="nc">&nbsp;        return levelMap;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Set the name of the file containing this level&#39;s map.
+&nbsp;     *
+&nbsp;     * @param fileName
+&nbsp;     *            Map to be used.
+&nbsp;     * @return Level corresponding to the given map.
+&nbsp;     */
+&nbsp;    public Launcher withMapFile(String fileName) {
+<b class="nc">&nbsp;        levelMap = fileName;</b>
+<b class="nc">&nbsp;        return this;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Creates a new game using the level from {@link #makeLevel()}.
+&nbsp;     *
+&nbsp;     * @return a new Game.
+&nbsp;     */
+&nbsp;    public Game makeGame() {
+<b class="nc">&nbsp;        GameFactory gf = getGameFactory();</b>
+<b class="nc">&nbsp;        Level level = makeLevel();</b>
+<b class="nc">&nbsp;        game = gf.createSinglePlayerGame(level, loadPointCalculator());</b>
+<b class="nc">&nbsp;        return game;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private PointCalculator loadPointCalculator() {
+<b class="nc">&nbsp;        return new PointCalculatorLoader().load();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Creates a new level. By default this method will use the map parser to
+&nbsp;     * parse the default board stored in the &lt;code&gt;board.txt&lt;/code&gt; resource.
+&nbsp;     *
+&nbsp;     * @return A new level.
+&nbsp;     */
+&nbsp;    public Level makeLevel() {
+&nbsp;        try {
+<b class="nc">&nbsp;            return getMapParser().parseMap(getLevelMap());</b>
+<b class="nc">&nbsp;        } catch (IOException e) {</b>
+<b class="nc">&nbsp;            throw new PacmanConfigurationException(</b>
+<b class="nc">&nbsp;                    &quot;Unable to create level, name = &quot; + getLevelMap(), e);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * @return A new map parser object using the factories from
+&nbsp;     *         {@link #getLevelFactory()} and {@link #getBoardFactory()}.
+&nbsp;     */
+&nbsp;    protected MapParser getMapParser() {
+<b class="nc">&nbsp;        return new MapParser(getLevelFactory(), getBoardFactory());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * @return A new board factory using the sprite store from
+&nbsp;     *         {@link #getSpriteStore()}.
+&nbsp;     */
+&nbsp;    protected BoardFactory getBoardFactory() {
+<b class="nc">&nbsp;        return new BoardFactory(getSpriteStore());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * @return The default {@link PacManSprites}.
+&nbsp;     */
+&nbsp;    protected PacManSprites getSpriteStore() {
+<b class="nc">&nbsp;        return SPRITE_STORE;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * @return A new factory using the sprites from {@link #getSpriteStore()}
+&nbsp;     *         and the ghosts from {@link #getGhostFactory()}.
+&nbsp;     */
+&nbsp;    protected LevelFactory getLevelFactory() {
+<b class="nc">&nbsp;        return new LevelFactory(getSpriteStore(), getGhostFactory(), loadPointCalculator());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * @return A new factory using the sprites from {@link #getSpriteStore()}.
+&nbsp;     */
+&nbsp;    protected GhostFactory getGhostFactory() {
+<b class="nc">&nbsp;        return new GhostFactory(getSpriteStore());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * @return A new factory using the players from {@link #getPlayerFactory()}.
+&nbsp;     */
+&nbsp;    protected GameFactory getGameFactory() {
+<b class="nc">&nbsp;        return new GameFactory(getPlayerFactory());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * @return A new factory using the sprites from {@link #getSpriteStore()}.
+&nbsp;     */
+&nbsp;    protected PlayerFactory getPlayerFactory() {
+<b class="nc">&nbsp;        return new PlayerFactory(getSpriteStore());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Adds key events UP, DOWN, LEFT and RIGHT to a game.
+&nbsp;     *
+&nbsp;     * @param builder
+&nbsp;     *            The {@link PacManUiBuilder} that will provide the UI.
+&nbsp;     */
+&nbsp;    protected void addSinglePlayerKeys(final PacManUiBuilder builder) {
+<b class="nc">&nbsp;        builder.addKey(KeyEvent.VK_UP, moveTowardsDirection(Direction.NORTH))</b>
+<b class="nc">&nbsp;                .addKey(KeyEvent.VK_DOWN, moveTowardsDirection(Direction.SOUTH))</b>
+<b class="nc">&nbsp;                .addKey(KeyEvent.VK_LEFT, moveTowardsDirection(Direction.WEST))</b>
+<b class="nc">&nbsp;                .addKey(KeyEvent.VK_RIGHT, moveTowardsDirection(Direction.EAST));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private Action moveTowardsDirection(Direction direction) {
+<b class="nc">&nbsp;        return () -&gt; {</b>
+<b class="nc">&nbsp;            assert game != null;</b>
+<b class="nc">&nbsp;            getGame().move(getSinglePlayer(getGame()), direction);</b>
+&nbsp;        };
+&nbsp;    }
+&nbsp;
+&nbsp;    private Player getSinglePlayer(final Game game) {
+<b class="nc">&nbsp;        List&lt;Player&gt; players = game.getPlayers();</b>
+<b class="nc">&nbsp;        if (players.isEmpty()) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Game has 0 players.&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return players.get(0);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Creates and starts a JPac-Man game.
+&nbsp;     */
+&nbsp;    public void launch() {
+<b class="nc">&nbsp;        makeGame();</b>
+<b class="nc">&nbsp;        PacManUiBuilder builder = new PacManUiBuilder().withDefaultButtons();</b>
+<b class="nc">&nbsp;        addSinglePlayerKeys(builder);</b>
+<b class="nc">&nbsp;        pacManUI = builder.build(getGame());</b>
+<b class="nc">&nbsp;        pacManUI.start();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Disposes of the UI. For more information see
+&nbsp;     * {@link javax.swing.JFrame#dispose()}.
+&nbsp;     *
+&nbsp;     * Precondition: The game was launched first.
+&nbsp;     */
+&nbsp;    public void dispose() {
+<b class="nc">&nbsp;        assert pacManUI != null;</b>
+<b class="nc">&nbsp;        pacManUI.dispose();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Main execution method for the Launcher.
+&nbsp;     *
+&nbsp;     * @param args
+&nbsp;     *            The command line arguments - which are ignored.
+&nbsp;     */
+&nbsp;    public static void main(String[] args)  {
+<b class="nc">&nbsp;        new Launcher().launch();</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-03-12 17:36</div>
+</div>
+</body>
+</html>

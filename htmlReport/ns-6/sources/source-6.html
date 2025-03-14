@@ -1,0 +1,378 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > MapParser</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">nl.tudelft.jpacman.level</a>
+</div>
+
+<h1>Coverage Summary for Class: MapParser (nl.tudelft.jpacman.level)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">MapParser</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/31)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/71)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package nl.tudelft.jpacman.level;
+&nbsp;
+&nbsp;import java.io.BufferedReader;
+&nbsp;import java.io.IOException;
+&nbsp;import java.io.InputStream;
+&nbsp;import java.io.InputStreamReader;
+&nbsp;import java.nio.charset.StandardCharsets;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;import nl.tudelft.jpacman.PacmanConfigurationException;
+&nbsp;import nl.tudelft.jpacman.board.Board;
+&nbsp;import nl.tudelft.jpacman.board.BoardFactory;
+&nbsp;import nl.tudelft.jpacman.board.Square;
+&nbsp;import nl.tudelft.jpacman.npc.Ghost;
+&nbsp;import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+&nbsp;
+&nbsp;/**
+&nbsp; * Creates new {@link Level}s from text representations.
+&nbsp; *
+&nbsp; * @author Jeroen Roosen
+&nbsp; */
+&nbsp;public class MapParser {
+&nbsp;
+&nbsp;    /**
+&nbsp;     * The factory that creates the levels.
+&nbsp;     */
+&nbsp;    private final LevelFactory levelCreator;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * The factory that creates the squares and board.
+&nbsp;     */
+&nbsp;    private final BoardFactory boardCreator;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Creates a new map parser.
+&nbsp;     *
+&nbsp;     * @param levelFactory
+&nbsp;     *            The factory providing the NPC objects and the level.
+&nbsp;     * @param boardFactory
+&nbsp;     *            The factory providing the Square objects and the board.
+&nbsp;     */
+<b class="nc">&nbsp;    public MapParser(LevelFactory levelFactory, BoardFactory boardFactory) {</b>
+<b class="nc">&nbsp;        this.levelCreator = levelFactory;</b>
+<b class="nc">&nbsp;        this.boardCreator = boardFactory;</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Parses the text representation of the board into an actual level.
+&nbsp;     *
+&nbsp;     * &lt;ul&gt;
+&nbsp;     * &lt;li&gt;Supported characters:
+&nbsp;     * &lt;li&gt;&#39; &#39; (space) an empty square.
+&nbsp;     * &lt;li&gt;&#39;#&#39; (bracket) a wall.
+&nbsp;     * &lt;li&gt;&#39;.&#39; (period) a square with a pellet.
+&nbsp;     * &lt;li&gt;&#39;P&#39; (capital P) a starting square for players.
+&nbsp;     * &lt;li&gt;&#39;G&#39; (capital G) a square with a ghost.
+&nbsp;     * &lt;/ul&gt;
+&nbsp;     *
+&nbsp;     * @param map
+&nbsp;     *            The text representation of the board, with map[x][y]
+&nbsp;     *            representing the square at position x,y.
+&nbsp;     * @return The level as represented by this text.
+&nbsp;     */
+&nbsp;    public Level parseMap(char[][] map) {
+<b class="nc">&nbsp;        int width = map.length;</b>
+<b class="nc">&nbsp;        int height = map[0].length;</b>
+&nbsp;
+<b class="nc">&nbsp;        Square[][] grid = new Square[width][height];</b>
+&nbsp;
+<b class="nc">&nbsp;        List&lt;Ghost&gt; ghosts = new ArrayList&lt;&gt;();</b>
+<b class="nc">&nbsp;        List&lt;Square&gt; startPositions = new ArrayList&lt;&gt;();</b>
+&nbsp;
+<b class="nc">&nbsp;        makeGrid(map, width, height, grid, ghosts, startPositions);</b>
+&nbsp;
+<b class="nc">&nbsp;        Board board = boardCreator.createBoard(grid);</b>
+<b class="nc">&nbsp;        return levelCreator.createLevel(board, ghosts, startPositions);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private void makeGrid(char[][] map, int width, int height,
+&nbsp;                          Square[][] grid, List&lt;Ghost&gt; ghosts, List&lt;Square&gt; startPositions) {
+<b class="nc">&nbsp;        for (int x = 0; x &lt; width; x++) {</b>
+<b class="nc">&nbsp;            for (int y = 0; y &lt; height; y++) {</b>
+<b class="nc">&nbsp;                char c = map[x][y];</b>
+<b class="nc">&nbsp;                addSquare(grid, ghosts, startPositions, x, y, c);</b>
+&nbsp;            }
+&nbsp;        }
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Adds a square to the grid based on a given character. These
+&nbsp;     * character come from the map files and describe the type
+&nbsp;     * of square.
+&nbsp;     *
+&nbsp;     * @param grid
+&nbsp;     *            The grid of squares with board[x][y] being the
+&nbsp;     *            square at column x, row y.
+&nbsp;     * @param ghosts
+&nbsp;     *            List of all ghosts that were added to the map.
+&nbsp;     * @param startPositions
+&nbsp;     *            List of all start positions that were added
+&nbsp;     *            to the map.
+&nbsp;     * @param x
+&nbsp;     *            x coordinate of the square.
+&nbsp;     * @param y
+&nbsp;     *            y coordinate of the square.
+&nbsp;     * @param c
+&nbsp;     *            Character describing the square type.
+&nbsp;     */
+&nbsp;    protected void addSquare(Square[][] grid, List&lt;Ghost&gt; ghosts,
+&nbsp;                             List&lt;Square&gt; startPositions, int x, int y, char c) {
+<b class="nc">&nbsp;        switch (c) {</b>
+&nbsp;            case &#39; &#39;:
+<b class="nc">&nbsp;                grid[x][y] = boardCreator.createGround();</b>
+<b class="nc">&nbsp;                break;</b>
+&nbsp;            case &#39;#&#39;:
+<b class="nc">&nbsp;                grid[x][y] = boardCreator.createWall();</b>
+<b class="nc">&nbsp;                break;</b>
+&nbsp;            case &#39;.&#39;:
+<b class="nc">&nbsp;                Square pelletSquare = boardCreator.createGround();</b>
+<b class="nc">&nbsp;                grid[x][y] = pelletSquare;</b>
+<b class="nc">&nbsp;                levelCreator.createPellet().occupy(pelletSquare);</b>
+<b class="nc">&nbsp;                break;</b>
+&nbsp;            case &#39;G&#39;:
+<b class="nc">&nbsp;                Square ghostSquare = makeGhostSquare(ghosts, levelCreator.createGhost());</b>
+<b class="nc">&nbsp;                grid[x][y] = ghostSquare;</b>
+<b class="nc">&nbsp;                break;</b>
+&nbsp;            case &#39;P&#39;:
+<b class="nc">&nbsp;                Square playerSquare = boardCreator.createGround();</b>
+<b class="nc">&nbsp;                grid[x][y] = playerSquare;</b>
+<b class="nc">&nbsp;                startPositions.add(playerSquare);</b>
+<b class="nc">&nbsp;                break;</b>
+&nbsp;            default:
+<b class="nc">&nbsp;                throw new PacmanConfigurationException(&quot;Invalid character at &quot;</b>
+&nbsp;                    + x + &quot;,&quot; + y + &quot;: &quot; + c);
+&nbsp;        }
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * creates a Square with the specified ghost on it
+&nbsp;     * and appends the placed ghost into the ghost list.
+&nbsp;     *
+&nbsp;     * @param ghosts all the ghosts in the level so far, the new ghost will be appended
+&nbsp;     * @param ghost the newly created ghost to be placed
+&nbsp;     * @return a square with the ghost on it.
+&nbsp;     */
+&nbsp;    protected Square makeGhostSquare(List&lt;Ghost&gt; ghosts, Ghost ghost) {
+<b class="nc">&nbsp;        Square ghostSquare = boardCreator.createGround();</b>
+<b class="nc">&nbsp;        ghosts.add(ghost);</b>
+<b class="nc">&nbsp;        ghost.occupy(ghostSquare);</b>
+<b class="nc">&nbsp;        return ghostSquare;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Parses the list of strings into a 2-dimensional character array and
+&nbsp;     * passes it on to {@link #parseMap(char[][])}.
+&nbsp;     *
+&nbsp;     * @param text
+&nbsp;     *            The plain text, with every entry in the list being a equally
+&nbsp;     *            sized row of squares on the board and the first element being
+&nbsp;     *            the top row.
+&nbsp;     * @return The level as represented by the text.
+&nbsp;     * @throws PacmanConfigurationException If text lines are not properly formatted.
+&nbsp;     */
+&nbsp;    public Level parseMap(List&lt;String&gt; text) {
+&nbsp;
+<b class="nc">&nbsp;        checkMapFormat(text);</b>
+&nbsp;
+<b class="nc">&nbsp;        int height = text.size();</b>
+<b class="nc">&nbsp;        int width = text.get(0).length();</b>
+&nbsp;
+<b class="nc">&nbsp;        char[][] map = new char[width][height];</b>
+<b class="nc">&nbsp;        for (int x = 0; x &lt; width; x++) {</b>
+<b class="nc">&nbsp;            for (int y = 0; y &lt; height; y++) {</b>
+<b class="nc">&nbsp;                map[x][y] = text.get(y).charAt(x);</b>
+&nbsp;            }
+&nbsp;        }
+<b class="nc">&nbsp;        return parseMap(map);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Check the correctness of the map lines in the text.
+&nbsp;     * @param text Map to be checked
+&nbsp;     * @throws PacmanConfigurationException if map is not OK.
+&nbsp;     */
+&nbsp;    private void checkMapFormat(List&lt;String&gt; text) {
+<b class="nc">&nbsp;        if (text == null) {</b>
+<b class="nc">&nbsp;            throw new PacmanConfigurationException(</b>
+&nbsp;                &quot;Input text cannot be null.&quot;);
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (text.isEmpty()) {</b>
+<b class="nc">&nbsp;            throw new PacmanConfigurationException(</b>
+&nbsp;                &quot;Input text must consist of at least 1 row.&quot;);
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        int width = text.get(0).length();</b>
+&nbsp;
+<b class="nc">&nbsp;        if (width == 0) {</b>
+<b class="nc">&nbsp;            throw new PacmanConfigurationException(</b>
+&nbsp;                &quot;Input text lines cannot be empty.&quot;);
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        for (String line : text) {</b>
+<b class="nc">&nbsp;            if (line.length() != width) {</b>
+<b class="nc">&nbsp;                throw new PacmanConfigurationException(</b>
+&nbsp;                    &quot;Input text lines are not of equal width.&quot;);
+&nbsp;            }
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Parses the provided input stream as a character stream and passes it
+&nbsp;     * result to {@link #parseMap(List)}.
+&nbsp;     *
+&nbsp;     * @param source
+&nbsp;     *            The input stream that will be read.
+&nbsp;     * @return The parsed level as represented by the text on the input stream.
+&nbsp;     * @throws IOException
+&nbsp;     *             when the source could not be read.
+&nbsp;     */
+&nbsp;    public Level parseMap(InputStream source) throws IOException {
+<b class="nc">&nbsp;        try (BufferedReader reader = new BufferedReader(new InputStreamReader(</b>
+&nbsp;            source, StandardCharsets.UTF_8))) {
+<b class="nc">&nbsp;            List&lt;String&gt; lines = new ArrayList&lt;&gt;();</b>
+<b class="nc">&nbsp;            while (reader.ready()) {</b>
+<b class="nc">&nbsp;                lines.add(reader.readLine());</b>
+&nbsp;            }
+<b class="nc">&nbsp;            return parseMap(lines);</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Parses the provided input stream as a character stream and passes it
+&nbsp;     * result to {@link #parseMap(List)}.
+&nbsp;     *
+&nbsp;     * @param mapName
+&nbsp;     *            Name of a resource that will be read.
+&nbsp;     * @return The parsed level as represented by the text on the input stream.
+&nbsp;     * @throws IOException
+&nbsp;     *             when the resource could not be read.
+&nbsp;     */
+&nbsp;    @SuppressFBWarnings(
+&nbsp;        value = {&quot;OBL_UNSATISFIED_OBLIGATION&quot;, &quot;RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE&quot;},
+&nbsp;        justification = &quot;try with resources always cleans up / false positive in java 11&quot;
+&nbsp;    )
+&nbsp;    public Level parseMap(String mapName) throws IOException {
+<b class="nc">&nbsp;        try (InputStream boardStream = MapParser.class.getResourceAsStream(mapName)) {</b>
+<b class="nc">&nbsp;            if (boardStream == null) {</b>
+<b class="nc">&nbsp;                throw new PacmanConfigurationException(&quot;Could not get resource for: &quot; + mapName);</b>
+&nbsp;            }
+<b class="nc">&nbsp;            return parseMap(boardStream);</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * @return the BoardCreator
+&nbsp;     */
+&nbsp;    protected BoardFactory getBoardCreator() {
+<b class="nc">&nbsp;        return boardCreator;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-03-12 17:36</div>
+</div>
+</body>
+</html>
