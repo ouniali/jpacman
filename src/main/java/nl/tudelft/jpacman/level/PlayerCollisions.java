@@ -7,14 +7,13 @@ import nl.tudelft.jpacman.points.PointCalculator;
 /**
  * A simple implementation of a collision map for the JPacman player.
  * <p>
- * It uses a number of instanceof checks to implement the multiple dispatch for the 
+ * It uses a number of instanceof checks to implement the multiple dispatch for the
  * collisionmap. For more realistic collision maps, this approach will not scale,
  * and the recommended approach is to use a {@link CollisionInteractionMap}.
  *
  * @author Arie van Deursen, 2014
  *
  */
-
 public class PlayerCollisions implements CollisionMap {
 
     private PointCalculator pointCalculator;
@@ -64,7 +63,6 @@ public class PlayerCollisions implements CollisionMap {
         }
     }
 
-
     /**
      * Actual case of player bumping into ghost or vice versa.
      *
@@ -74,9 +72,18 @@ public class PlayerCollisions implements CollisionMap {
      *          The ghost involved in the collision.
      */
     public void playerVersusGhost(Player player, Ghost ghost) {
-        pointCalculator.collidedWithAGhost(player, ghost);
-        player.setAlive(false);
-        player.setKiller(ghost);
+        player.decrementLives(); // Réduit le nombre de vies du joueur
+        if (player.getLives() > 0) {
+            // Le joueur a encore des vies, il respawn (par exemple, positionner le joueur à un endroit de départ)
+            player.respawn();
+            System.out.println("Le joueur respawn avec " + player.getLives() + " vies restantes.");
+        } else {
+            // Le joueur n'a plus de vies, il meurt
+            pointCalculator.collidedWithAGhost(player, ghost); // Calculer les points ou autres conséquences
+            player.setAlive(false); // Le joueur est désormais mort
+            player.setKiller(ghost); // Le fantôme est la cause de la mort
+            System.out.println("Le joueur est mort ! Il a été tué par " + ghost);
+        }
     }
 
     /**
@@ -91,5 +98,4 @@ public class PlayerCollisions implements CollisionMap {
         pointCalculator.consumedAPellet(player, pellet);
         pellet.leaveSquare();
     }
-
 }

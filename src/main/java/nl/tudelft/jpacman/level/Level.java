@@ -21,7 +21,7 @@ import nl.tudelft.jpacman.npc.Ghost;
  * A level of Pac-Man. A level consists of the board with the players and the
  * AIs on it.
  *
- * @author Jeroen Roosen 
+ * @author Jeroen Roosen
  */
 @SuppressWarnings("PMD.TooManyMethods")
 public class Level {
@@ -178,21 +178,29 @@ public class Level {
             return;
         }
 
-        synchronized (moveLock) {
-            unit.setDirection(direction);
-            Square location = unit.getSquare();
-            Square destination = location.getSquareAt(direction);
+        unit.setDirection(direction);
+        Square location = unit.getSquare();
+        Square destination = location.getSquareAt(direction);
 
+        synchronized (moveLock) {
             if (destination.isAccessibleTo(unit)) {
-                List<Unit> occupants = destination.getOccupants();
                 unit.occupy(destination);
-                for (Unit occupant : occupants) {
-                    collisions.collide(unit, occupant);
-                }
+                handleMoveCollisions(unit, direction, destination);
             }
             updateObservers();
         }
     }
+
+    /**
+     * Handles the collisions at each move
+     */
+    public void handleMoveCollisions(Unit unit, Direction direction, Square destination){
+        List<Unit> occupants = destination.getOccupants();
+        for (Unit occupant : occupants) {
+            collisions.collide(unit, occupant);
+        }
+    }
+
 
     /**
      * Starts or resumes this level, allowing movement and (re)starting the

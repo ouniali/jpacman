@@ -11,7 +11,7 @@ import nl.tudelft.jpacman.board.Unit;
  * A map of possible collisions and their handlers.
  *
  * @author Michael de Jong
- * @author Jeroen Roosen 
+ * @author Jeroen Roosen
  */
 public class CollisionInteractionMap implements CollisionMap {
 
@@ -176,6 +176,12 @@ public class CollisionInteractionMap implements CollisionMap {
             if (superClass != null && Unit.class.isAssignableFrom(superClass)) {
                 found.add((Class<? extends Unit>) superClass);
             }
+            index++;
+        }
+
+        index = 0;
+        while (found.size() > index) {
+            Class<?> current = found.get(index);
             for (Class<?> classInterface : current.getInterfaces()) {
                 if (Unit.class.isAssignableFrom(classInterface)) {
                     found.add((Class<? extends Unit>) classInterface);
