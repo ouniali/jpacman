@@ -50,6 +50,8 @@ public class LevelFactory {
      */
     private final PointCalculator pointCalculator;
 
+
+
     /**
      * Creates a new level factory.
      *
@@ -82,9 +84,13 @@ public class LevelFactory {
      */
     public Level createLevel(Board board, List<Ghost> ghosts, List<Square> startPositions) {
 
-        // We'll adopt the simple collision map for now.
-        CollisionMap collisionMap = new PlayerCollisions(pointCalculator);
+        // Création du niveau d'abord
+        Level level = new Level(board, ghosts, startPositions, null);
 
+        // Création de la gestion des collisions en lui passant le niveau
+        CollisionMap collisionMap = new PlayerCollisions(pointCalculator, level);
+
+        // Mettre à jour le niveau avec la vraie gestion des collisions
         return new Level(board, ghosts, startPositions, collisionMap);
     }
 
