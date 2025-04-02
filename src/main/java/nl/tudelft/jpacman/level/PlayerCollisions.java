@@ -19,6 +19,9 @@ public class PlayerCollisions implements CollisionMap {
 
     private PointCalculator pointCalculator;
 
+    private final Level level; // Référence au niveau
+
+
     /**
      * Create a simple player-based collision map, informing the
      * point calculator about points to be added.
@@ -26,8 +29,9 @@ public class PlayerCollisions implements CollisionMap {
      * @param pointCalculator
      *             Strategy for calculating points.
      */
-    public PlayerCollisions(PointCalculator pointCalculator) {
+    public PlayerCollisions(PointCalculator pointCalculator, Level level) {
         this.pointCalculator = pointCalculator;
+        this.level = level;
     }
 
     @Override
@@ -75,9 +79,25 @@ public class PlayerCollisions implements CollisionMap {
      */
     public void playerVersusGhost(Player player, Ghost ghost) {
         pointCalculator.collidedWithAGhost(player, ghost);
+
+        if (player.getLives() > 1) {
+            player.loseLife();
+            player.occupy(player.getInitialPosition()); // Réapparaître
+            level.resetGhosts(); // Réinitialiser les fantômes après la perte d'une vie
+            return;
+        }
         player.setAlive(false);
         player.setKiller(ghost);
     }
+
+
+
+    private void respawnPlayer(Player player) {
+        if (player.getInitialPosition() != null) {
+            player.occupy(player.getInitialPosition());
+        }
+    }
+
 
     /**
      * Actual case of player consuming a pellet.

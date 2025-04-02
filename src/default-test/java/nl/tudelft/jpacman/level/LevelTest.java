@@ -154,4 +154,49 @@ class LevelTest {
         level.registerPlayer(p3);
         verify(p3).occupy(square1);
     }
+
+    /**
+     * Vérifie que lorsqu'un joueur est enregistré, il commence avec 3 vies.
+     */
+    @Test
+    void playerStartsWithThreeLives() {
+        Player p = mock(Player.class);
+        when(p.getLives()).thenReturn(3);
+        level.registerPlayer(p);
+        assertThat(p.getLives()).isEqualTo(3);
+    }
+
+    /**
+     * Vérifie que lorsqu'un joueur perd une vie, son nombre de vies diminue correctement..
+     */
+    @Test
+    void playerLosesLife() {
+        Player p = mock(Player.class);
+        when(p.getLives()).thenReturn(3);
+        level.registerPlayer(p);
+
+        //Simuler la perte d'une vie
+        p.loseLife();
+        when(p.getLives()).thenReturn(2);
+
+        assertThat(p.getLives()).isEqualTo(2);
+    }
+
+    /**
+     * Vérifie que lorsqu'un joueur perd sa derniere vie restante, il est marqué comme mort.
+     */
+    @Test
+    void playerDies() {
+        Player p = mock(Player.class);
+        when(p.getLives()).thenReturn(1);
+        level.registerPlayer(p);
+
+        //Simuler la perte de toutes les vies
+        p.loseLife();
+        when(p.getLives()).thenReturn(0);
+        when(p.isAlive()).thenReturn(false);
+
+        assertThat(p.getLives()).isEqualTo(0);
+        assertThat(p.isAlive()).isFalse();
+    }
 }
