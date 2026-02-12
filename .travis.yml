@@ -1,21 +1,17 @@
-dist: trusty
+dist: focal
 language: java
 before_install:
   - "export DISPLAY=:99.0"
-  - "sh -e /etc/init.d/xvfb start"
+  - "Xvfb :99 -screen 0 1024x768x24 &"
 jobs:
   include:
     - stage: "Test"
       script: ./gradlew test
-      jdk: oraclejdk8
+      jdk: openjdk21
     - script: ./gradlew test
-      jdk: oraclejdk9
-    - script: ./gradlew test
-      jdk: oraclejdk11
+      jdk: openjdk25
     - stage: "Static Analysis"
       script: ./gradlew staticAnalysis
-      jdk: oraclejdk8
+      jdk: openjdk21
     - script: ./gradlew staticAnalysis
-      jdk: oraclejdk9
-    - script: ./gradlew staticAnalysis
-      jdk: oraclejdk11
+      jdk: openjdk25

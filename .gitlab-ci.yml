@@ -1,11 +1,13 @@
-image: tudsqte/ci-image
+image: eclipse-temurin:25-jdk
 
 stages:
-    - test
-    - static-analysis
+  - test
+  - static-analysis
 
 test:
   stage: test
+  before_script:
+    - apt-get update && apt-get install -y xvfb
   script:
     - "xvfb-run ./gradlew test jacocoTestReport"
     - "awk -F\",\" '{ instructions += $4 + $5; covered += $5 } END { print covered, \"/\", instructions, \" instructions covered\"; print 100*covered/instructions, \"% covered\" }' build/reports/jacoco/test/jacocoTestReport.csv"
@@ -13,4 +15,6 @@ test:
 
 warnings:
   stage: static-analysis
+  before_script:
+    - apt-get update && apt-get install -y xvfb
   script: "./gradlew staticAnalysis"
