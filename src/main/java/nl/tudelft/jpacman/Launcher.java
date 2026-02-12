@@ -4,7 +4,10 @@ import nl.tudelft.jpacman.board.BoardFactory;
 import nl.tudelft.jpacman.board.Direction;
 import nl.tudelft.jpacman.game.Game;
 import nl.tudelft.jpacman.game.GameFactory;
+import nl.tudelft.jpacman.hp.HPCalculator;
+import nl.tudelft.jpacman.hp.HPCalculatorLoader;
 import nl.tudelft.jpacman.level.*;
+import nl.tudelft.jpacman.npc.Ghost;
 import nl.tudelft.jpacman.npc.ghost.GhostFactory;
 import nl.tudelft.jpacman.points.PointCalculator;
 import nl.tudelft.jpacman.points.PointCalculatorLoader;
@@ -70,12 +73,16 @@ public class Launcher {
     public Game makeGame() {
         GameFactory gf = getGameFactory();
         Level level = makeLevel();
-        game = gf.createSinglePlayerGame(level, loadPointCalculator());
+        game = gf.createSinglePlayerGame(level, loadPointCalculator(), loadHPCalculator());
         return game;
     }
 
     private PointCalculator loadPointCalculator() {
         return new PointCalculatorLoader().load();
+    }
+
+    private HPCalculator loadHPCalculator() {
+        return new HPCalculatorLoader().load();
     }
 
     /**
@@ -121,7 +128,7 @@ public class Launcher {
      *         and the ghosts from {@link #getGhostFactory()}.
      */
     protected LevelFactory getLevelFactory() {
-        return new LevelFactory(getSpriteStore(), getGhostFactory(), loadPointCalculator());
+        return new LevelFactory(getSpriteStore(), getGhostFactory(), loadPointCalculator(), loadHPCalculator());
     }
 
     /**

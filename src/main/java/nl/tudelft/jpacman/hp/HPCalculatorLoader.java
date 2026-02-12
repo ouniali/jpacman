@@ -1,4 +1,4 @@
-package nl.tudelft.jpacman.points;
+package nl.tudelft.jpacman.hp;
 
 import java.io.IOException;
 import java.net.URL;
@@ -6,35 +6,35 @@ import java.net.URLClassLoader;
 import java.util.Properties;
 
 /**
- * The responsibility of this loader is to obtain the appropriate points calculator.
- * By default the {@link DefaultPointCalculator} is returned.
+ * The responsibility of this loader is to obtain the appropriate hp calculator.
+ * By default the {@link DefaultHPCalculator} is returned.
  */
-public class PointCalculatorLoader {
+public class HPCalculatorLoader {
 
     private static Class clazz = null;
 
     /**
-     * Load a points calculator and return it.
+     * Load a hp calculator and return it.
      *
-     * @return The (dynamically loaded) points calculator.
+     * @return The (dynamically loaded) hp calculator.
      */
-    public PointCalculator load() {
+    public HPCalculator load() {
         try {
             if (clazz == null) {
                 clazz = loadClassFromFile();
             }
 
-            return (PointCalculator) clazz.newInstance();
+            return (HPCalculator) clazz.newInstance();
         } catch (Exception e) {
-            throw new RuntimeException("Could not dynamically load the points calculator.", e);
+            throw new RuntimeException("Could not dynamically load the hp calculator.", e);
         }
     }
 
     private Class loadClassFromFile() throws IOException, ClassNotFoundException {
         String strategyToLoad = getCalculatorClassName();
 
-        if ("DefaultPointCalculator".equals(strategyToLoad)) {
-            return DefaultPointCalculator.class;
+        if ("DefaultHPCalculator".equals(strategyToLoad)) {
+            return DefaultHPCalculator.class;
         }
 
         URL[] urls = new URL[]{getClass().getClassLoader().getResource("scoreplugins/")};
@@ -49,6 +49,6 @@ public class PointCalculatorLoader {
 
         properties.load(getClass().getClassLoader().getResourceAsStream("calc.properties"));
 
-        return properties.getProperty("scorecalculator.name");
+        return properties.getProperty("hpcalculator.name");
     }
 }

@@ -2,6 +2,7 @@ package nl.tudelft.jpacman.game;
 
 import java.util.List;
 
+import nl.tudelft.jpacman.hp.HPCalculator;
 import nl.tudelft.jpacman.level.Level;
 import nl.tudelft.jpacman.level.Player;
 
@@ -35,7 +36,7 @@ public class SinglePlayerGame extends Game {
      * @param pointCalculator
      *            The way to calculate points upon collisions.
      */
-    protected SinglePlayerGame(Player player, Level level, PointCalculator pointCalculator) {
+    protected SinglePlayerGame(Player player, Level level, PointCalculator pointCalculator, HPCalculator hpCalculator) {
         super(pointCalculator);
 
         assert player != null;

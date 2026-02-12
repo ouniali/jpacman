@@ -3,6 +3,7 @@ package nl.tudelft.jpacman.level;
 import nl.tudelft.jpacman.board.Board;
 import nl.tudelft.jpacman.board.Direction;
 import nl.tudelft.jpacman.board.Square;
+import nl.tudelft.jpacman.hp.HPCalculator;
 import nl.tudelft.jpacman.npc.Ghost;
 import nl.tudelft.jpacman.npc.ghost.GhostColor;
 import nl.tudelft.jpacman.npc.ghost.GhostFactory;
@@ -51,6 +52,11 @@ public class LevelFactory {
     private final PointCalculator pointCalculator;
 
     /**
+     * The way to calculate HP upon collisions.
+     */
+    private final HPCalculator hpCalculator;
+
+    /**
      * Creates a new level factory.
      *
      * @param spriteStore
@@ -62,11 +68,13 @@ public class LevelFactory {
      */
     public LevelFactory(PacManSprites spriteStore,
                         GhostFactory ghostFactory,
-                        PointCalculator pointCalculator) {
+                        PointCalculator pointCalculator,
+                        HPCalculator hpCalculator) {
         this.sprites = spriteStore;
         this.ghostIndex = -1;
         this.ghostFact = ghostFactory;
         this.pointCalculator = pointCalculator;
+        this.hpCalculator = hpCalculator;
     }
 
     /**
@@ -83,7 +91,7 @@ public class LevelFactory {
     public Level createLevel(Board board, List<Ghost> ghosts, List<Square> startPositions) {
 
         // We'll adopt the simple collision map for now.
-        CollisionMap collisionMap = new PlayerCollisions(pointCalculator);
+        CollisionMap collisionMap = new PlayerCollisions(pointCalculator, hpCalculator);
 
         return new Level(board, ghosts, startPositions, collisionMap);
     }

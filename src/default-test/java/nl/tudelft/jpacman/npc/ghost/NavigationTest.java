@@ -6,6 +6,7 @@ import nl.tudelft.jpacman.board.BoardFactory;
 import nl.tudelft.jpacman.board.Direction;
 import nl.tudelft.jpacman.board.Square;
 import nl.tudelft.jpacman.board.Unit;
+import nl.tudelft.jpacman.hp.HPCalculator;
 import nl.tudelft.jpacman.level.LevelFactory;
 import nl.tudelft.jpacman.level.MapParser;
 import nl.tudelft.jpacman.level.Pellet;
@@ -44,7 +45,8 @@ class NavigationTest {
         LevelFactory levelFactory = new LevelFactory(
             sprites,
             new GhostFactory(sprites),
-            mock(PointCalculator.class));
+            mock(PointCalculator.class),
+            mock(HPCalculator.class));
         parser = new MapParser(levelFactory, new BoardFactory(sprites));
     }
 

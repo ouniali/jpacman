@@ -1,6 +1,7 @@
 package nl.tudelft.jpacman.sprite;
 
 import java.awt.Graphics;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Animated sprite, renders the frame depending on the time of requesting the
@@ -44,6 +45,11 @@ public class AnimatedSprite implements Sprite {
      * The {@link System#currentTimeMillis()} stamp of the last update.
      */
     private long lastUpdate;
+
+    /**
+     * Use to lock executions during an animation
+     */
+    private CompletableFuture<Void> animationFuture = new CompletableFuture<>();
 
     /**
      * Creates a new animating sprite that will change frames every interval. By
@@ -105,6 +111,11 @@ public class AnimatedSprite implements Sprite {
      */
     public void setAnimating(boolean isAnimating) {
         this.animating = isAnimating;
+        if (this.animating) {
+            onAnimationStart();
+        } else {
+            onAnimationFinished();
+        }
     }
 
     /**
@@ -140,7 +151,7 @@ public class AnimatedSprite implements Sprite {
                 if (looping) {
                     current %= animationFrames.length;
                 } else if (current == animationFrames.length) {
-                    animating = false;
+                    setAnimating(false);
                 }
             }
         } else {
@@ -158,6 +169,28 @@ public class AnimatedSprite implements Sprite {
     public int getHeight() {
         assert currentSprite() != null;
         return currentSprite().getHeight();
+    }
+
+    /**
+     * Use to get the animation locker
+     * @return an `completionFuture` acting as a locker
+     */
+    public CompletableFuture<Void> getAnimationFuture() {
+        return animationFuture;
+    }
+
+    /**
+     * Played at the end of the animation
+     */
+    public void onAnimationFinished() {
+        animationFuture.complete(null); // Signale que l'animation est terminée
+    }
+
+    /**
+     * Played when an animation is started
+     */
+    public void onAnimationStart() {
+        animationFuture = new CompletableFuture<>();
     }
 
 }

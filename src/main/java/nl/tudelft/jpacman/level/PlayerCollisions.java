@@ -1,6 +1,7 @@
 package nl.tudelft.jpacman.level;
 
 import nl.tudelft.jpacman.board.Unit;
+import nl.tudelft.jpacman.hp.HPCalculator;
 import nl.tudelft.jpacman.npc.Ghost;
 import nl.tudelft.jpacman.points.PointCalculator;
 
@@ -17,7 +18,8 @@ import nl.tudelft.jpacman.points.PointCalculator;
 
 public class PlayerCollisions implements CollisionMap {
 
-    private PointCalculator pointCalculator;
+    private final PointCalculator pointCalculator;
+    private final HPCalculator hpCalculator;
 
     /**
      * Create a simple player-based collision map, informing the
@@ -25,9 +27,12 @@ public class PlayerCollisions implements CollisionMap {
      *
      * @param pointCalculator
      *             Strategy for calculating points.
+     * @param hpCalculator
+     *            Strategy for calculating HP.
      */
-    public PlayerCollisions(PointCalculator pointCalculator) {
+    public PlayerCollisions(PointCalculator pointCalculator, HPCalculator hpCalculator) {
         this.pointCalculator = pointCalculator;
+        this.hpCalculator = hpCalculator;
     }
 
     @Override
@@ -75,8 +80,9 @@ public class PlayerCollisions implements CollisionMap {
      */
     public void playerVersusGhost(Player player, Ghost ghost) {
         pointCalculator.collidedWithAGhost(player, ghost);
-        player.setAlive(false);
+        hpCalculator.collidedWithAGhost(player, ghost);
         player.setKiller(ghost);
+        player.death();
     }
 
     /**

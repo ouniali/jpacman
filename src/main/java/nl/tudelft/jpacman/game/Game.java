@@ -29,7 +29,7 @@ public abstract class Game implements LevelObserver {
      * The algorithm used to calculate the points that
      * they player gets whenever some action happens.
      */
-    private PointCalculator pointCalculator;
+    private final PointCalculator pointCalculator;
 
     /**
      * Creates a new game.
@@ -54,6 +54,21 @@ public abstract class Game implements LevelObserver {
                 inProgress = true;
                 getLevel().addObserver(this);
                 getLevel().start();
+            }
+        }
+    }
+
+    /**
+     * Run this when the players have lost a life, they need to be revived
+     */
+    public void revive() {
+        synchronized (progressLock) {
+            if (isInProgress()) {
+                return;
+            }
+            if (getLevel().isAnyPlayerAlive() && getLevel().remainingPellets() > 0) {
+                inProgress = false;
+                getLevel().revive();
             }
         }
     }
@@ -107,6 +122,16 @@ public abstract class Game implements LevelObserver {
     @Override
     public void levelWon() {
         stop();
+    }
+
+    @Override
+    public void playerDied() {
+        stop();
+    }
+
+    @Override
+    public void playerRevive() {
+        revive();
     }
 
     @Override

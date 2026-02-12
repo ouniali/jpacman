@@ -1,6 +1,7 @@
 package nl.tudelft.jpacman.level;
 
 import nl.tudelft.jpacman.board.Unit;
+import nl.tudelft.jpacman.hp.HPCalculator;
 import nl.tudelft.jpacman.npc.Ghost;
 import nl.tudelft.jpacman.points.PointCalculator;
 
@@ -17,7 +18,9 @@ import nl.tudelft.jpacman.points.PointCalculator;
  */
 public class DefaultPlayerInteractionMap implements CollisionMap {
 
-    private PointCalculator pointCalculator;
+    private final PointCalculator pointCalculator;
+
+    private final HPCalculator hpCalculator;
 
     private final CollisionMap collisions = defaultCollisions();
 
@@ -28,8 +31,9 @@ public class DefaultPlayerInteractionMap implements CollisionMap {
      * @param pointCalculator
      *             Strategy for calculating points.
      */
-    public DefaultPlayerInteractionMap(PointCalculator pointCalculator) {
+    public DefaultPlayerInteractionMap(PointCalculator pointCalculator, HPCalculator hpCalculator) {
         this.pointCalculator = pointCalculator;
+        this.hpCalculator = hpCalculator;
     }
 
     @Override
@@ -49,6 +53,7 @@ public class DefaultPlayerInteractionMap implements CollisionMap {
         collisionMap.onCollision(Player.class, Ghost.class,
             (player, ghost) -> {
                 pointCalculator.collidedWithAGhost(player, ghost);
+                hpCalculator.collidedWithAGhost(player, ghost);
                 player.setAlive(false);
                 player.setKiller(ghost);
             });
@@ -56,6 +61,7 @@ public class DefaultPlayerInteractionMap implements CollisionMap {
         collisionMap.onCollision(Player.class, Pellet.class,
             (player, pellet) -> {
                 pointCalculator.consumedAPellet(player, pellet);
+                hpCalculator.consumedAPellet(player, pellet);
                 pellet.leaveSquare();
             });
         return collisionMap;

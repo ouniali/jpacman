@@ -1,6 +1,7 @@
 package nl.tudelft.jpacman.level;
 
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 import nl.tudelft.jpacman.board.Direction;
 import nl.tudelft.jpacman.board.Unit;
@@ -10,9 +11,18 @@ import nl.tudelft.jpacman.sprite.Sprite;
 /**
  * A player operated unit in our game.
  *
- * @author Jeroen Roosen 
+ * @author Jeroen Roosen
  */
 public class Player extends Unit {
+
+    private static final int STARTING_HP = 3;
+
+    /**
+     * The amount of heal points this player has.
+     */
+    private int hp;
+
+    private boolean alive;
 
     /**
      * The amount of points accumulated by this player.
@@ -29,30 +39,35 @@ public class Player extends Unit {
      */
     private final AnimatedSprite deathSprite;
 
-    /**
-     * <code>true</code> iff this player is alive.
-     */
-    private boolean alive;
 
     /**
      * {@link Unit} iff this player died by collision, <code>null</code> otherwise.
      */
     private Unit killer;
 
+
     /**
      * Creates a new player with a score of 0 points.
      *
-     * @param spriteMap
-     *            A map containing a sprite for this player for every direction.
-     * @param deathAnimation
-     *            The sprite to be shown when this player dies.
+     * @param spriteMap      A map containing a sprite for this player for every direction.
+     * @param deathAnimation The sprite to be shown when this player dies.
      */
     protected Player(Map<Direction, Sprite> spriteMap, AnimatedSprite deathAnimation) {
-        this.score = 0;
+        this.hp = STARTING_HP;
         this.alive = true;
+        this.score = 0;
         this.sprites = spriteMap;
         this.deathSprite = deathAnimation;
         deathSprite.setAnimating(false);
+    }
+
+    /**
+     * Returns the amount of heal points this player has.
+     *
+     * @return The amount of heal points this player has.
+     */
+    public int getHP() {
+        return hp;
     }
 
     /**
@@ -61,25 +76,34 @@ public class Player extends Unit {
      * @return <code>true</code> iff the player is alive.
      */
     public boolean isAlive() {
-        return alive;
+        return this.alive;
+    }
+
+    /**
+     * Change isAlive status if a player still have lives.
+     */
+    public void revive() {
+        if (this.getHP() > 0) {
+            setAlive(true);
+        }
+    }
+
+    /**
+     * Handle the death of a player
+     */
+    public void death() {
+        this.alive = false;
+        deathSprite.restart();
     }
 
     /**
      * Sets whether this player is alive or not.
+     * <p>
+     * If the player comes back alive, the {@link this.killer} will be reset.
      *
-     * If the player comes back alive, the {@link killer} will be reset.
-     *
-     * @param isAlive
-     *            <code>true</code> iff this player is alive.
+     * @param isAlive <code>true</code> iff this player is alive.
      */
     public void setAlive(boolean isAlive) {
-        if (isAlive) {
-            deathSprite.setAnimating(false);
-            this.killer = null;
-        }
-        if (!isAlive) {
-            deathSprite.restart();
-        }
         this.alive = isAlive;
     }
 
@@ -98,7 +122,7 @@ public class Player extends Unit {
      * @param killer is set if collision with ghost happens.
      */
     public void setKiller(Unit killer) {
-        this.killer =  killer;
+        this.killer = killer;
     }
 
     /**
@@ -119,13 +143,29 @@ public class Player extends Unit {
     }
 
     /**
+     *
+     * @return the locker of the animation.
+     */
+    public CompletableFuture<Void> getAnimationFuture() {
+        return deathSprite.getAnimationFuture();
+    }
+
+    /**
      * Adds points to the score of this player.
      *
-     * @param points
-     *            The amount of points to add to the points this player already
-     *            has.
+     * @param points The amount of points to add to the points this player already
+     *               has.
      */
     public void addPoints(int points) {
         score += points;
+    }
+
+    /**
+     * Removes points from the score of this player.
+     *
+     * @param hp The amount of points to remove from the points this player already has.
+     */
+    public void removeHP(int hp) {
+        this.hp -= hp;
     }
 }
