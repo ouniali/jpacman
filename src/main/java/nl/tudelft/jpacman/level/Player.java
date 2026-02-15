@@ -10,7 +10,7 @@ import nl.tudelft.jpacman.sprite.Sprite;
 /**
  * A player operated unit in our game.
  *
- * @author Jeroen Roosen 
+ * @author Jeroen Roosen
  */
 public class Player extends Unit {
 
@@ -18,6 +18,11 @@ public class Player extends Unit {
      * The amount of points accumulated by this player.
      */
     private int score;
+
+    /**
+     * The amount of remaining lives for this player.
+     */
+    private int lives;
 
     /**
      * The animations for every direction.
@@ -49,6 +54,7 @@ public class Player extends Unit {
      */
     protected Player(Map<Direction, Sprite> spriteMap, AnimatedSprite deathAnimation) {
         this.score = 0;
+        this.lives = 3;  // Initial lives set to 3
         this.alive = true;
         this.sprites = spriteMap;
         this.deathSprite = deathAnimation;
@@ -86,7 +92,7 @@ public class Player extends Unit {
     /**
      * Returns the unit that caused the death of Pac-Man.
      *
-     * @return <code>Unit</code> iff the player died by collision, otherwise <code>null</code>.
+     * @return <code>Unit</code> iff the player died by collision, otherwise <code>null</code> .
      */
     public Unit getKiller() {
         return killer;
@@ -98,7 +104,7 @@ public class Player extends Unit {
      * @param killer is set if collision with ghost happens.
      */
     public void setKiller(Unit killer) {
-        this.killer =  killer;
+        this.killer = killer;
     }
 
     /**
@@ -108,6 +114,15 @@ public class Player extends Unit {
      */
     public int getScore() {
         return score;
+    }
+
+    /**
+     * Returns the number of lives of this player.
+     *
+     * @return The number of lives of this player.
+     */
+    public int getLives() {
+        return lives;
     }
 
     @Override
@@ -127,5 +142,25 @@ public class Player extends Unit {
      */
     public void addPoints(int points) {
         score += points;
+    }
+
+    /**
+     * Remove one life for this player.
+     * If the player has no more lives, set the player as dead.
+     */
+    public void decrementLives() {
+        lives -= 1;
+        if (lives <= 0) {
+            setAlive(false);  // Player dies if no more lives
+        }
+    }
+
+    /**
+     * Respawns the player if they still have lives left.
+     */
+    public void respawn() {
+        if (lives > 0) {
+            setAlive(true);  // Player is alive again
+        }
     }
 }
