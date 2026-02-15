@@ -3,6 +3,7 @@ package nl.tudelft.jpacman.level;
 import nl.tudelft.jpacman.board.Unit;
 import nl.tudelft.jpacman.npc.Ghost;
 import nl.tudelft.jpacman.points.PointCalculator;
+import nl.tudelft.jpacman.ui.DeathWindow;
 
 /**
  * An extensible default interaction map for collisions caused by the player.
@@ -49,7 +50,8 @@ public class DefaultPlayerInteractionMap implements CollisionMap {
         collisionMap.onCollision(Player.class, Ghost.class,
             (player, ghost) -> {
                 pointCalculator.collidedWithAGhost(player, ghost);
-                player.setAlive(false);
+                player.loseOneLife();
+                DeathWindow window = new DeathWindow(player);
                 player.setKiller(ghost);
             });
 
