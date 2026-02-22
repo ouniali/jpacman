@@ -1,5 +1,6 @@
 package nl.tudelft.jpacman.game;
 
+import nl.tudelft.jpacman.board.Square;
 import nl.tudelft.jpacman.level.Level;
 import nl.tudelft.jpacman.level.PlayerFactory;
 import nl.tudelft.jpacman.points.PointCalculator;
@@ -7,7 +8,7 @@ import nl.tudelft.jpacman.points.PointCalculator;
 /**
  * Factory that provides Game objects.
  *
- * @author Jeroen Roosen 
+ * @author Jeroen Roosen
  */
 public class GameFactory {
 
@@ -36,7 +37,9 @@ public class GameFactory {
      * @return A new single player game.
      */
     public Game createSinglePlayerGame(Level level, PointCalculator pointCalculator) {
-        return new SinglePlayerGame(playerFactory.createPacMan(), level, pointCalculator);
+        Square startSquare = level.getStartSquare(); // Obtenir la position de départ
+        return new SinglePlayerGame(playerFactory.createPacMan(startSquare), level, pointCalculator);
+
     }
 
     /**

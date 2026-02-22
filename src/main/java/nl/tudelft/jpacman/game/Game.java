@@ -31,6 +31,7 @@ public abstract class Game implements LevelObserver {
      */
     private PointCalculator pointCalculator;
 
+
     /**
      * Creates a new game.
      *
@@ -111,6 +112,16 @@ public abstract class Game implements LevelObserver {
 
     @Override
     public void levelLost() {
-        stop();
+        for (Player player : getPlayers()) {
+            if (player.getLives() > 1) {
+                player.loseLife();
+                player.occupy(player.getInitialPosition()); // Réapparaître
+
+
+                getLevel().resetGhosts(); // Réinitialiser les fantômes après chaque mort
+                return; // Ne pas arrêter le jeu si Pac-Man a encore des vies
+            }
+        }
+        stop(); // Arrêter le jeu si plus de vies
     }
 }

@@ -78,6 +78,8 @@ public class Level {
      */
     private final Set<LevelObserver> observers;
 
+    private final Map<Ghost, Square> ghostStartPositions = new HashMap<>();
+
     /**
      * Creates a new level for the board.
      *
@@ -101,7 +103,9 @@ public class Level {
         this.npcs = new HashMap<>();
         for (Ghost ghost : ghosts) {
             npcs.put(ghost, null);
+            ghostStartPositions.put(ghost, ghost.getSquare()); // Stocker la position initiale
         }
+
         this.startSquares = startPositions;
         this.startSquareIndex = 0;
         this.players = new ArrayList<>();
@@ -146,10 +150,12 @@ public class Level {
         }
         players.add(player);
         Square square = startSquares.get(startSquareIndex);
-        player.occupy(square);
+        player.setInitialPosition(square); // Stocker la position initiale du joueur
+        player.occupy(square); // Placer le joueur au départ
         startSquareIndex++;
         startSquareIndex %= startSquares.size();
     }
+
 
     /**
      * Returns the board of this level.
@@ -244,10 +250,12 @@ public class Level {
     private void stopNPCs() {
         for (Entry<Ghost, ScheduledExecutorService> entry : npcs.entrySet()) {
             ScheduledExecutorService schedule = entry.getValue();
-            assert schedule != null;
-            schedule.shutdownNow();
+            if (schedule != null) { // Vérification avant l'arrêt
+                schedule.shutdownNow();
+            }
         }
     }
+
 
     /**
      * Returns whether this level is in progress, i.e. whether moves can be made
@@ -372,4 +380,45 @@ public class Level {
          */
         void levelLost();
     }
+
+    public Square getStartSquare() {
+        return startSquares.get(0); // Retourne la première case de départ
+    }
+
+    public void resetGhosts() {
+        // Arrêter tous les fantômes pour éviter qu'ils ne bougent immédiatement
+        stopNPCs();
+
+        // Réinitialiser chaque fantôme à sa position initiale
+        for (Map.Entry<Ghost, Square> entry : ghostStartPositions.entrySet()) {
+            Ghost ghost = entry.getKey();
+            Square startSquare = entry.getValue();
+
+            ghost.leaveSquare(); // Retirer le fantôme de sa position actuelle
+            ghost.occupy(startSquare); // Remettre le fantôme à sa position de départ
+        }
+
+        // Redémarrer les fantômes après 2 secondes pour éviter qu'ils ne bougent instantanément
+        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+        scheduler.schedule(this::startNPCs, 2, TimeUnit.SECONDS);
+    }
+
+
+
+    private void stopGhost(Ghost ghost) {
+        if (npcs.containsKey(ghost) && npcs.get(ghost) != null) {
+            npcs.get(ghost).shutdownNow(); // Arrêter son déplacement actuel
+        }
+
+        ScheduledExecutorService newService = Executors.newSingleThreadScheduledExecutor();
+        newService.schedule(() -> startGhost(ghost), 2, TimeUnit.SECONDS); // Le relancer après 2s
+        npcs.put(ghost, newService);
+    }
+
+    private void startGhost(Ghost ghost) {
+        ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
+        service.schedule(new NpcMoveTask(service, ghost), ghost.getInterval(), TimeUnit.MILLISECONDS);
+        npcs.put(ghost, service);
+    }
+
 }

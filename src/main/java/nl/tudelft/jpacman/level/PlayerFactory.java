@@ -1,11 +1,12 @@
 package nl.tudelft.jpacman.level;
 
+import nl.tudelft.jpacman.board.Square;
 import nl.tudelft.jpacman.sprite.PacManSprites;
 
 /**
  * Factory that creates Players.
  *
- * @author Jeroen Roosen 
+ * @author Jeroen Roosen
  */
 public class PlayerFactory {
 
@@ -29,9 +30,13 @@ public class PlayerFactory {
      *
      * @return A new player.
      */
-    public Player createPacMan() {
-        return new Player(getSprites().getPacmanSprites(), getSprites().getPacManDeathAnimation());
+    public Player createPacMan(Square startSquare) {
+        Player player = new Player(getSprites().getPacmanSprites(), getSprites().getPacManDeathAnimation());
+        player.setInitialPosition(startSquare); // Stocker la position initiale
+        player.occupy(startSquare); // Placer le joueur sur la case de départ
+        return player;
     }
+
 
     /**
      * The sprites created by the factory.
