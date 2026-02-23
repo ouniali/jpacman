@@ -12,7 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
 import nl.tudelft.jpacman.game.Game;
-import nl.tudelft.jpacman.ui.ScorePanel.ScoreFormatter;
+import nl.tudelft.jpacman.ui.ScorePanel.NumberFormatter;
 
 /**
  * The default JPacMan UI frame. The PacManUI consists of the following
@@ -67,7 +67,7 @@ public class PacManUI extends JFrame {
      */
     public PacManUI(final Game game, final Map<String, Action> buttons,
                     final Map<Integer, Action> keyMappings,
-                    ScoreFormatter scoreFormatter) {
+                    NumberFormatter scoreFormatter) {
         super("JPacman");
         assert game != null;
         assert buttons != null;
@@ -82,7 +82,7 @@ public class PacManUI extends JFrame {
 
         scorePanel = new ScorePanel(game.getPlayers());
         if (scoreFormatter != null) {
-            scorePanel.setScoreFormatter(scoreFormatter);
+            scorePanel.setNumberFormatter(scoreFormatter);
         }
 
         boardPanel = new BoardPanel(game);

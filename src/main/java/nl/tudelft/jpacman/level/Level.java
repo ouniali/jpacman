@@ -263,16 +263,67 @@ public class Level {
      * Updates the observers about the state of this level.
      */
     private void updateObservers() {
-        if (!isAnyPlayerAlive()) {
-            for (LevelObserver observer : observers) {
-                observer.levelLost();
-            }
+        
+        boolean playersNotAlive = validationPlayersNotAlive();
+        boolean validationPelletsTakes = validationAllPelletsTakes();
+
+        //if the players are alives and not all pelletsTake continue the level
+        if(!playersNotAlive && !validationPelletsTakes){
+            return;
         }
-        if (remainingPellets() == 0) {
-            for (LevelObserver observer : observers) {
+        if(playersHasLives()){
+            return;
+        }
+
+        for (LevelObserver observer : observers) {
+            if(playersNotAlive){
+                observer.levelLost();
+            } else{
                 observer.levelWon();
             }
         }
+    }
+
+    /**
+     * Revives the player.
+     *
+     * @param player
+     *            The player to revive.
+     */
+    private void revivePlayer(Player player) {
+        player.setAlive(true);
+        Square startSquare = startSquares.get(startSquareIndex);
+        player.occupy(startSquare);
+    }
+
+    /**
+     * Validate if the level is won or not
+     * @return return a boolean true if the players have take all the pellets and false if pellets remain on the board.
+     */
+    private boolean validationAllPelletsTakes(){
+        return  remainingPellets() == 0;
+    }
+
+    /**
+     * Validate if the players have take all is life
+     * @return return a boolean true if the players is not alive and false if the players is alive.
+     */
+    private boolean validationPlayersNotAlive(){
+        return  !isAnyPlayerAlive();
+    }
+
+    /**
+     * Validate if the players has lives remaining
+     * @return return a boolean true if the players still has lives and false if the players is alive.
+     */
+    private boolean playersHasLives(){
+        for(Player player : players){
+            if(player.getLives() > 0 && !player.isAlive()){
+                revivePlayer(player);
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
