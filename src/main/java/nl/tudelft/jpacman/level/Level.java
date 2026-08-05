@@ -263,11 +263,27 @@ public class Level {
      * Updates the observers about the state of this level.
      */
     private void updateObservers() {
+        checkLevelLost();
+        checkLevelWon();
+    }
+
+    /**
+     * Checks whether no player is alive anymore, and if so notifies the
+     * observers that the level has been lost.
+     */
+    private void checkLevelLost() {
         if (!isAnyPlayerAlive()) {
             for (LevelObserver observer : observers) {
                 observer.levelLost();
             }
         }
+    }
+
+    /**
+     * Checks whether no pellets remain, and if so notifies the observers
+     * that the level has been won.
+     */
+    private void checkLevelWon() {
         if (remainingPellets() == 0) {
             for (LevelObserver observer : observers) {
                 observer.levelWon();

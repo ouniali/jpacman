@@ -13,7 +13,6 @@ import nl.tudelft.jpacman.sprite.Sprite;
  * @author Jeroen Roosen 
  */
 public class Player extends Unit {
-
     /**
      * The amount of points accumulated by this player.
      */
